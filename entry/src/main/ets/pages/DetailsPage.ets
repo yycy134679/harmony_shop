@@ -1,6 +1,7 @@
 import { Product } from '../model/Product';
 import { DataSource } from '../model/DataSource';
 import { CartViewModel } from '../viewmodel/CartViewModel';
+import { FavoriteViewModel } from '../viewmodel/FavoriteViewModel';
 import { Constants } from '../common/Constants';
 import router from '@ohos.router';
 import promptAction from '@ohos.promptAction';
@@ -13,14 +14,27 @@ import promptAction from '@ohos.promptAction';
 struct DetailsPage {
   @State product: Product | undefined = undefined;
   @State quantity: number = 1;
+  @State isFavorite: boolean = false;
   @StorageLink(Constants.IS_LOGGED_IN) isLoggedIn: boolean = false;
   private cartViewModel: CartViewModel = new CartViewModel();
+  private favoriteViewModel: FavoriteViewModel = new FavoriteViewModel();
 
-  aboutToAppear() {
-    // 获取路由参数
-    const params = router.getParams() as Record<string, Object>;
-    if (params && params.productId) {
-      this.product = DataSource.getProductById(params.productId as number);
+  async aboutToAppear() {
+    try {
+      await this.favoriteViewModel.init(getContext(this) as Context);
+
+      // 获取路由参数
+      const params = router.getParams() as Record<string, Object>;
+      if (params && params.productId) {
+        this.product = DataSource.getProductById(params.productId as number);
+
+        // 检查收藏状态
+        if (this.product && this.favoriteViewModel.isLoggedIn()) {
+          this.isFavorite = await this.favoriteViewModel.checkFavoriteStatus(this.product.id);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to initialize DetailsPage:', error);
     }
   }
 
@@ -49,10 +63,53 @@ struct DetailsPage {
 
         Blank()
 
-        // 占位，保持居中
-        Text('')
-          .width(40)
-          .height(40)
+        // 收藏按钮
+        Button({ type: ButtonType.Circle }) {
+          Image(this.isFavorite ? $r('sys.symbol.heart_fill') : $r('sys.symbol.heart'))
+            .width(24)
+            .height(24)
+            .fillColor(this.isFavorite ? '#ff6b35' : '#666')
+        }
+        .width(40)
+        .height(40)
+        .backgroundColor('#F5F5F5')
+        .onClick(async () => {
+          if (!this.isLoggedIn) {
+            promptAction.showToast({
+              message: '请先登录后再收藏商品',
+              duration: 2000
+            });
+            router.pushUrl({ url: 'pages/LoginPage' });
+            return;
+          }
+
+          if (!this.product) {
+            return;
+          }
+
+          // 实现收藏功能
+          try {
+            const result = await this.favoriteViewModel.toggleFavorite(this.product.id);
+            if (result.success) {
+              this.isFavorite = result.isFavorite;
+              promptAction.showToast({
+                message: result.message,
+                duration: 2000
+              });
+            } else {
+              promptAction.showToast({
+                message: result.message,
+                duration: 2000
+              });
+            }
+          } catch (error) {
+            console.error('Failed to toggle favorite:', error);
+            promptAction.showToast({
+              message: '操作失败，请重试',
+              duration: 2000
+            });
+          }
+        })
       }
       .width('100%')
       .height(56)

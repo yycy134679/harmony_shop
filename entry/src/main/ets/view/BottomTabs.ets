@@ -2,6 +2,7 @@ import { Constants } from '../common/Constants';
 import { CartItem } from '../model/CartItem';
 import { IndexContent } from './IndexContent';
 import { CartContent } from './CartContent';
+import router from '@ohos.router';
 
 /**
  * 底部导航栏容器组件 - 应用的主导航容器
@@ -32,6 +33,26 @@ struct BottomTabs {
         CartContent()
       }
       .tabBar(this.TabBuilder('购物车', 1, $r('sys.symbol.cart'), this.getCartTotalQuantity()))
+
+      // 我的标签
+      TabContent() {
+        Column() {
+          Text('个人中心')
+            .fontSize(16)
+            .fontColor('#666')
+            .margin({ top: 100 })
+
+          Button('进入个人中心')
+            .margin({ top: 20 })
+            .onClick(() => {
+              router.pushUrl({ url: 'pages/ProfilePage' });
+            })
+        }
+        .width('100%')
+        .height('100%')
+        .justifyContent(FlexAlign.Center)
+      }
+      .tabBar(this.TabBuilder('我的', 2, $r('sys.symbol.person')))
     }
     .onChange((index: number) => {
       this.currentIndex = index;

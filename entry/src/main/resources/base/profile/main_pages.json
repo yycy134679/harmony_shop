@@ -6,6 +6,12 @@
     "pages/CartPage",
     "pages/DetailsPage",
     "pages/CheckoutSuccessPage",
+    "pages/ProfilePage",
+    "pages/EditProfilePage",
+    "pages/FavoriteListPage",
+    "pages/AddressManagementPage",
+    "pages/OrderListPage",
+    "pages/OrderConfirmationPage",
     "view/BottomTabs"
   ]
 }

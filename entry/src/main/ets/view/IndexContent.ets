@@ -3,6 +3,7 @@ import { router } from '@kit.ArkUI';
 import { Constants } from '../common/Constants';
 import { CartViewModel } from '../viewmodel/CartViewModel';
 import { UserViewModel } from '../viewmodel/UserViewModel';
+import { FavoriteViewModel } from '../viewmodel/FavoriteViewModel';
 import { Product } from '../model/Product';
 import promptAction from '@ohos.promptAction';
 
@@ -28,6 +29,8 @@ export struct IndexContent {
   private cartViewModel: CartViewModel = new CartViewModel();
   // 用户视图模型
   private userViewModel: UserViewModel = new UserViewModel();
+  // 收藏视图模型
+  private favoriteViewModel: FavoriteViewModel = new FavoriteViewModel();
   
   // All products data (replace with your actual data source)
   @State allProducts: IndexProduct[] = [
@@ -104,15 +107,37 @@ export struct IndexContent {
   ];
   // Filtered products based on selected category
   @State filteredProducts: IndexProduct[] = [];
+  // 搜索关键词
+  @State searchKeyword: string = '';
 
   // Lifecycle method: Called when the component is about to appear
-  aboutToAppear() {
+  async aboutToAppear() {
+    try {
+      await this.favoriteViewModel.init(getContext(this) as Context);
+    } catch (error) {
+      console.error('Failed to initialize FavoriteViewModel:', error);
+    }
     this.updateFilteredProducts();
   }
 
   // Method to update the filtered products list
   updateFilteredProducts() {
-    this.filteredProducts = this.allProducts.filter(product => product.category === this.selectedCategory);
+    let filtered = this.allProducts.filter(product => product.category === this.selectedCategory);
+
+    // 如果有搜索关键词，进一步过滤
+    if (this.searchKeyword.trim()) {
+      filtered = filtered.filter(product =>
+        product.name.toLowerCase().includes(this.searchKeyword.toLowerCase())
+      );
+    }
+
+    this.filteredProducts = filtered;
+  }
+
+  // 处理搜索输入变化
+  onSearchChange(value: string) {
+    this.searchKeyword = value;
+    this.updateFilteredProducts();
   }
 
   build() {
@@ -131,7 +156,31 @@ export struct IndexContent {
       .shadow({ radius: 8, color: 'rgba(0, 0, 0, 0.1)', offsetY: 2 })
       .justifyContent(FlexAlign.Center)
 
-      // 2. Welcome and Login Area
+      // 2. 搜索框
+      Row() {
+        TextInput({ placeholder: '搜索商品...', text: this.searchKeyword })
+          .layoutWeight(1)
+          .height(40)
+          .backgroundColor('#f5f5f5')
+          .borderRadius(20)
+          .padding({ left: 16, right: 16 })
+          .onChange((value: string) => this.onSearchChange(value))
+
+        if (this.searchKeyword.trim()) {
+          Button('清空')
+            .height(32)
+            .backgroundColor('transparent')
+            .fontColor('#666')
+            .fontSize(14)
+            .margin({ left: 8 })
+            .onClick(() => this.onSearchChange(''))
+        }
+      }
+      .width('100%')
+      .padding({ left: 20, right: 20, top: 12, bottom: 12 })
+      .backgroundColor('#fff')
+
+      // 3. Welcome and Login Area
       Row() {
         Text('商品列表')
           .fontSize(18)
@@ -175,7 +224,7 @@ export struct IndexContent {
       .width('100%')
       .padding({ left: 20, right: 20, top: 15, bottom: 15 })
 
-      // 3. Category Navigation Bar with pill design
+      // 4. Category Navigation Bar with pill design
       Scroll() {
         Row({ space: 12 }) {
           ForEach(this.categories, (category: string) => {
@@ -200,7 +249,7 @@ export struct IndexContent {
       .height(60)
       .margin({ bottom: 10 })
 
-      // 4. Product List with card design
+      // 5. Product List with card design
       List({ space: 15 }) {
         ForEach(this.filteredProducts, (product: IndexProduct) => {
           ListItem() {
@@ -215,6 +264,54 @@ export struct IndexContent {
                   .onError(() => {
                     console.error(`Failed to load image: ${product.imageUrl}`);
                   })
+
+                // 收藏按钮
+                Button({ type: ButtonType.Circle }) {
+                  Image($r('sys.symbol.heart'))
+                    .width(20)
+                    .height(20)
+                    .fillColor('#ff6b35')
+                }
+                .width(36)
+                .height(36)
+                .backgroundColor('rgba(255, 255, 255, 0.9)')
+                .position({ x: '85%', y: 8 })
+                .onClick(async (event?: ClickEvent) => {
+                  // 阻止事件冒泡，避免触发商品详情页跳转
+                  event?.stopPropagation();
+
+                  // 检查登录状态
+                  if (!this.isLoggedIn) {
+                    promptAction.showToast({
+                      message: '请先登录后再收藏商品',
+                      duration: 2000
+                    });
+                    router.pushUrl({ url: 'pages/LoginPage' });
+                    return;
+                  }
+
+                  // 实现收藏功能
+                  try {
+                    const result = await this.favoriteViewModel.toggleFavorite(product.id);
+                    if (result.success) {
+                      promptAction.showToast({
+                        message: result.message,
+                        duration: 2000
+                      });
+                    } else {
+                      promptAction.showToast({
+                        message: result.message,
+                        duration: 2000
+                      });
+                    }
+                  } catch (error) {
+                    console.error('Failed to toggle favorite:', error);
+                    promptAction.showToast({
+                      message: '操作失败，请重试',
+                      duration: 2000
+                    });
+                  }
+                })
               }
               .width('100%')
               .height(200)
