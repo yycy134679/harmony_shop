@@ -4,6 +4,18 @@ import { AddressViewModel } from '../viewmodel/AddressViewModel';
 import { Address } from '../model/Address';
 import common from '@ohos.app.ability.common';
 
+interface AddressFormData {
+  recipientName: string;
+  phone: string;
+  fullAddress: string;
+  isDefault: boolean;
+}
+
+interface SaveResult {
+  success: boolean;
+  message: string;
+}
+
 /**
  * 地址编辑页面
  */
@@ -47,7 +59,7 @@ struct AddressEditPage {
 
     this.isLoading = true;
     try {
-      let result: { success: boolean; message: string };
+      let result: SaveResult;
 
       if (this.isEditMode) {
         // 编辑模式
@@ -62,12 +74,13 @@ struct AddressEditPage {
         result = await this.addressViewModel.updateAddress(updatedAddress);
       } else {
         // 新增模式
-        result = await this.addressViewModel.addAddress({
+        const newAddress: AddressFormData = {
           recipientName: this.recipientName.trim(),
           phone: this.phone.trim(),
           fullAddress: this.fullAddress.trim(),
           isDefault: this.isDefault
-        });
+        };
+        result = await this.addressViewModel.addAddress(newAddress);
       }
 
       if (result.success) {

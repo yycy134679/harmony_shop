@@ -1,5 +1,6 @@
 import router from '@ohos.router';
 import { Order } from '../model/Order';
+import { OrderItem as OrderItemModel } from '../model/OrderItem';
 import { OrderViewModel } from '../viewmodel/OrderViewModel';
 
 /**
@@ -91,7 +92,7 @@ struct OrderDetailPage {
             // 收货地址
             Column() {
               Row() {
-                Image($r('sys.symbol.location'))
+                Image($r('sys.symbol.house'))
                   .width(20)
                   .height(20)
                   .fillColor('#ff6b35')
@@ -150,7 +151,7 @@ struct OrderDetailPage {
               .width('100%')
               .margin({ bottom: 12 })
 
-              ForEach(this.order.items, (item) => {
+              ForEach(this.order.items, (item: OrderItemModel) => {
                 Row() {
                   Image($r('sys.symbol.bag'))
                     .width(60)
@@ -189,7 +190,7 @@ struct OrderDetailPage {
                 .width('100%')
                 .padding({ top: 12, bottom: 12 })
                 .border({ width: { bottom: 1 }, color: '#f0f0f0' })
-              }, (item) => `${item.productId}`)
+              }, (item: OrderItemModel) => `${item.productId}`)
             }
             .width('100%')
             .padding(16)

@@ -33,7 +33,7 @@ struct BottomTabs {
       TabContent() {
         CartContent()
       }
-      .tabBar(this.TabBuilder('购物车', 1, $r('sys.symbol.cart'), this.getCartTotalQuantity()))
+      .tabBar(this.TabBuilder('购物车', 1, $r('sys.symbol.bag'), this.getCartTotalQuantity()))
 
       // 我的标签
       TabContent() {

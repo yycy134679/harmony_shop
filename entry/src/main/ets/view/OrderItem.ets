@@ -82,7 +82,7 @@ export struct OrderItem {
 
       // 收货地址信息
       Row() {
-        Image($r('sys.symbol.location'))
+        Image($r('sys.symbol.house'))
           .width(16)
           .height(16)
           .fillColor('#666')

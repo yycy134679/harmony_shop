@@ -78,7 +78,7 @@ export struct ProfileContent {
       // 用户信息区域
       Column() {
         // 头像
-        Image($r('sys.symbol.person_circle'))
+        Image($r('sys.symbol.person'))
           .width(80)
           .height(80)
           .fillColor('#ff6b35')
@@ -112,9 +112,9 @@ export struct ProfileContent {
         Divider().color('#f0f0f0')
         this.buildMenuItem('我的收藏', $r('sys.symbol.heart'), () => this.goToFavorites())
         Divider().color('#f0f0f0')
-        this.buildMenuItem('地址管理', $r('sys.symbol.location'), () => this.goToAddressManagement())
+        this.buildMenuItem('地址管理', $r('sys.symbol.house'), () => this.goToAddressManagement())
         Divider().color('#f0f0f0')
-        this.buildMenuItem('修改信息', $r('sys.symbol.person_badge_plus'), () => this.goToEditProfile())
+        this.buildMenuItem('修改信息', $r('sys.symbol.person'), () => this.goToEditProfile())
       }
       .backgroundColor('#fff')
       .borderRadius(8)
@@ -142,7 +142,7 @@ export struct ProfileContent {
     Column() {
       // 未登录提示区域
       Column() {
-        Image($r('sys.symbol.person_circle'))
+        Image($r('sys.symbol.person'))
           .width(80)
           .height(80)
           .fillColor('#ccc')

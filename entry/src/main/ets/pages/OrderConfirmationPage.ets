@@ -124,7 +124,7 @@ struct OrderConfirmationPage {
     this.isLoading = true;
     try {
       // 模拟支付延迟
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise<void>(resolve => setTimeout(resolve, 1500));
 
       // 创建订单
       const result = await this.cartViewModel.createOrderAndClearCart(
@@ -193,7 +193,7 @@ struct OrderConfirmationPage {
           // 收货地址区域
           Column() {
             Row() {
-              Image($r('sys.symbol.location'))
+              Image($r('sys.symbol.house'))
                 .width(20)
                 .height(20)
                 .fillColor('#ff6b35')

@@ -5,6 +5,12 @@ import { OrderItem } from '../view/OrderItem';
 import { Order } from '../model/Order';
 import common from '@ohos.app.ability.common';
 
+interface OrderStats {
+  total: number;
+  paid: number;
+  completed: number;
+}
+
 /**
  * 我的订单页面
  */
@@ -13,7 +19,7 @@ import common from '@ohos.app.ability.common';
 struct OrderListPage {
   @State orders: Order[] = [];
   @State isLoading: boolean = true;
-  @State orderStats: { total: number; paid: number; completed: number } = { total: 0, paid: 0, completed: 0 };
+  @State orderStats: OrderStats = { total: 0, paid: 0, completed: 0 };
   private orderViewModel: OrderViewModel = new OrderViewModel();
 
   async aboutToAppear() {
