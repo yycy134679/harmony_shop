@@ -5,6 +5,7 @@ import { FavoriteViewModel } from '../viewmodel/FavoriteViewModel';
 import { Constants } from '../common/Constants';
 import router from '@ohos.router';
 import promptAction from '@ohos.promptAction';
+import common from '@ohos.app.ability.common';
 
 /**
  * 商品详情页
@@ -21,7 +22,7 @@ struct DetailsPage {
 
   async aboutToAppear() {
     try {
-      await this.favoriteViewModel.init(getContext(this) as Context);
+      await this.favoriteViewModel.init(getContext(this) as common.UIAbilityContext);
 
       // 获取路由参数
       const params = router.getParams() as Record<string, Object>;

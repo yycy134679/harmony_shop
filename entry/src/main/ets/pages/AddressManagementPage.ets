@@ -38,7 +38,7 @@ struct AddressManagementPage {
 
       // 占位内容
       Column() {
-        Image($r('sys.symbol.location'))
+        Image($r('sys.symbol.house'))
           .width(80)
           .height(80)
           .fillColor('#ddd')

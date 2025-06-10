@@ -2,6 +2,7 @@ import router from '@ohos.router';
 import { FavoriteViewModel } from '../viewmodel/FavoriteViewModel';
 import { Product } from '../model/Product';
 import promptAction from '@ohos.promptAction';
+import common from '@ohos.app.ability.common';
 
 /**
  * 我的收藏页面
@@ -15,7 +16,7 @@ struct FavoriteListPage {
 
   async aboutToAppear() {
     try {
-      await this.favoriteViewModel.init(getContext(this) as Context);
+      await this.favoriteViewModel.init(getContext(this) as common.UIAbilityContext);
       await this.loadFavoriteProducts();
     } catch (error) {
       console.error('Failed to initialize FavoriteListPage:', error);

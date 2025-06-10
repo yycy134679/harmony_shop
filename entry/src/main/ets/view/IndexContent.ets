@@ -6,6 +6,7 @@ import { UserViewModel } from '../viewmodel/UserViewModel';
 import { FavoriteViewModel } from '../viewmodel/FavoriteViewModel';
 import { Product } from '../model/Product';
 import promptAction from '@ohos.promptAction';
+import common from '@ohos.app.ability.common';
 
 interface IndexProduct {
   id: number;
@@ -113,7 +114,7 @@ export struct IndexContent {
   // Lifecycle method: Called when the component is about to appear
   async aboutToAppear() {
     try {
-      await this.favoriteViewModel.init(getContext(this) as Context);
+      await this.favoriteViewModel.init(getContext(this) as common.UIAbilityContext);
     } catch (error) {
       console.error('Failed to initialize FavoriteViewModel:', error);
     }
@@ -276,10 +277,7 @@ export struct IndexContent {
                 .height(36)
                 .backgroundColor('rgba(255, 255, 255, 0.9)')
                 .position({ x: '85%', y: 8 })
-                .onClick(async (event?: ClickEvent) => {
-                  // 阻止事件冒泡，避免触发商品详情页跳转
-                  event?.stopPropagation();
-
+                .onClick(async () => {
                   // 检查登录状态
                   if (!this.isLoggedIn) {
                     promptAction.showToast({

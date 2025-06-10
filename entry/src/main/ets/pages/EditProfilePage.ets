@@ -1,6 +1,7 @@
 import router from '@ohos.router';
 import { EditProfileViewModel } from '../viewmodel/EditProfileViewModel';
 import { User } from '../model/User';
+import common from '@ohos.app.ability.common';
 
 /**
  * 编辑个人信息页面
@@ -16,7 +17,7 @@ struct EditProfilePage {
 
   async aboutToAppear() {
     try {
-      await this.editProfileViewModel.init(getContext(this) as Context);
+      await this.editProfileViewModel.init(getContext(this) as common.UIAbilityContext);
       await this.loadUserInfo();
     } catch (error) {
       console.error('Failed to initialize EditProfilePage:', error);
