@@ -114,4 +114,71 @@ export class UserService {
       return false;
     }
   }
+
+  /**
+   * 根据用户名获取用户信息
+   */
+  async getUserByUsername(username: string): Promise<User | null> {
+    try {
+      const users = await this.getAllUsers();
+      return users.find(user => user.username === username) || null;
+    } catch (error) {
+      console.error('Failed to get user by username:', error);
+      return null;
+    }
+  }
+
+  /**
+   * 更新用户信息
+   */
+  async updateUser(username: string, updatedInfo: Partial<User>): Promise<boolean> {
+    try {
+      const users = await this.getAllUsers();
+      const userIndex = users.findIndex(user => user.username === username);
+
+      if (userIndex === -1) {
+        return false; // 用户不存在
+      }
+
+      // 更新用户信息，但不允许修改用户名
+      users[userIndex] = {
+        ...users[userIndex],
+        ...updatedInfo,
+        username: users[userIndex].username // 保持用户名不变
+      };
+
+      await this.saveAllUsers(users);
+      return true;
+    } catch (error) {
+      console.error('Failed to update user:', error);
+      return false;
+    }
+  }
+
+  /**
+   * 修改用户密码
+   */
+  async changePassword(username: string, oldPassword: string, newPassword: string): Promise<boolean> {
+    try {
+      const users = await this.getAllUsers();
+      const userIndex = users.findIndex(user => user.username === username);
+
+      if (userIndex === -1) {
+        return false; // 用户不存在
+      }
+
+      // 验证旧密码
+      if (users[userIndex].password !== oldPassword) {
+        return false; // 旧密码错误
+      }
+
+      // 更新密码
+      users[userIndex].password = newPassword;
+      await this.saveAllUsers(users);
+      return true;
+    } catch (error) {
+      console.error('Failed to change password:', error);
+      return false;
+    }
+  }
 }

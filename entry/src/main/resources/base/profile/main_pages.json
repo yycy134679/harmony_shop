@@ -10,8 +10,11 @@
     "pages/EditProfilePage",
     "pages/FavoriteListPage",
     "pages/AddressManagementPage",
+    "pages/AddressEditPage",
+    "pages/AddressSelectionPage",
     "pages/OrderListPage",
     "pages/OrderConfirmationPage",
+    "pages/OrderDetailPage",
     "view/BottomTabs"
   ]
 }

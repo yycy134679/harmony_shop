@@ -2,6 +2,7 @@ import { CartViewModel } from '../viewmodel/CartViewModel';
 import { CartItem } from '../model/CartItem';
 import { Constants } from '../common/Constants';
 import router from '@ohos.router';
+import promptAction from '@ohos.promptAction';
 
 /**
  * 购物车页面
@@ -170,11 +171,19 @@ struct CartPage {
             .height(40)
             .backgroundColor('#ff6b35')
             .onClick(() => {
-              // 清空购物车
-              this.cartViewModel.clearCart();
-              // 跳转到结算成功页面
+              // 验证购物车
+              const validation = this.cartViewModel.canCheckout();
+              if (!validation.canCheckout) {
+                promptAction.showToast({
+                  message: validation.message,
+                  duration: 2000
+                });
+                return;
+              }
+
+              // 跳转到订单确认页面
               router.pushUrl({
-                url: 'pages/CheckoutSuccessPage'
+                url: 'pages/OrderConfirmationPage'
               });
             })
         }

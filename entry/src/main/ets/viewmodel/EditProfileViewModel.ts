@@ -30,14 +30,16 @@ export class EditProfileViewModel {
         return null;
       }
 
-      // 这里需要扩展 UserService 来获取用户详细信息
-      // 暂时返回基本信息
-      return {
-        username: currentUser,
-        password: '', // 不返回密码
-        phone: '138****8888', // 占位数据
-        email: ''
-      };
+      // 从UserService获取用户详细信息
+      const userInfo = await this.userService.getUserByUsername(currentUser);
+      if (userInfo) {
+        // 不返回密码信息
+        return {
+          ...userInfo,
+          password: ''
+        };
+      }
+      return null;
     } catch (error) {
       console.error('Failed to get current user info:', error);
       return null;
@@ -63,9 +65,13 @@ export class EditProfileViewModel {
         return { success: false, message: '请输入正确的邮箱地址' };
       }
 
-      // 这里需要扩展 UserService 来支持更新用户信息
-      // 暂时返回成功
-      return { success: true, message: '信息更新成功' };
+      // 调用UserService更新用户信息
+      const success = await this.userService.updateUser(currentUser, userInfo);
+      if (success) {
+        return { success: true, message: '信息更新成功' };
+      } else {
+        return { success: false, message: '更新失败，用户不存在' };
+      }
     } catch (error) {
       console.error('Failed to update user info:', error);
       return { success: false, message: '更新失败，请重试' };
@@ -73,10 +79,11 @@ export class EditProfileViewModel {
   }
 
   /**
-   * 验证手机号码格式
+   * 验证手机号码格式 - 只验证11位数字
    */
   private validatePhone(phone: string): boolean {
-    const phoneRegex = /^1[3-9]\d{9}$/;
+    // 只验证是否为11位数字
+    const phoneRegex = /^\d{11}$/;
     return phoneRegex.test(phone);
   }
 
@@ -103,15 +110,13 @@ export class EditProfileViewModel {
         return { success: false, message: '新密码长度不能少于6位' };
       }
 
-      // 验证旧密码
-      const isOldPasswordValid = await this.userService.login(currentUser, oldPassword);
-      if (!isOldPasswordValid) {
-        return { success: false, message: '原密码错误' };
+      // 调用UserService修改密码
+      const success = await this.userService.changePassword(currentUser, oldPassword, newPassword);
+      if (success) {
+        return { success: true, message: '密码修改成功' };
+      } else {
+        return { success: false, message: '原密码错误或用户不存在' };
       }
-
-      // 这里需要扩展 UserService 来支持修改密码
-      // 暂时返回成功
-      return { success: true, message: '密码修改成功' };
     } catch (error) {
       console.error('Failed to change password:', error);
       return { success: false, message: '密码修改失败，请重试' };

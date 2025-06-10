@@ -2,6 +2,7 @@ import { Constants } from '../common/Constants';
 import { CartItem } from '../model/CartItem';
 import { IndexContent } from './IndexContent';
 import { CartContent } from './CartContent';
+import { ProfileContent } from './ProfileContent';
 import router from '@ohos.router';
 
 /**
@@ -36,21 +37,7 @@ struct BottomTabs {
 
       // 我的标签
       TabContent() {
-        Column() {
-          Text('个人中心')
-            .fontSize(16)
-            .fontColor('#666')
-            .margin({ top: 100 })
-
-          Button('进入个人中心')
-            .margin({ top: 20 })
-            .onClick(() => {
-              router.pushUrl({ url: 'pages/ProfilePage' });
-            })
-        }
-        .width('100%')
-        .height('100%')
-        .justifyContent(FlexAlign.Center)
+        ProfileContent()
       }
       .tabBar(this.TabBuilder('我的', 2, $r('sys.symbol.person')))
     }

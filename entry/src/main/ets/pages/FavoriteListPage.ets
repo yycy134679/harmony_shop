@@ -87,7 +87,8 @@ struct FavoriteListPage {
         }
         .width(40)
         .height(40)
-        .backgroundColor('transparent')
+        .backgroundColor('#f0f0f0')
+        .borderRadius(20)
         .onClick(() => router.back())
 
         Text('我的收藏')

@@ -69,6 +69,38 @@ struct ProfilePage {
 
   build() {
     Column() {
+      // 标题栏
+      Row() {
+        Button() {
+          Image($r('sys.symbol.chevron_left'))
+            .width(24)
+            .height(24)
+            .fillColor('#333')
+        }
+        .width(40)
+        .height(40)
+        .backgroundColor('#f0f0f0')
+        .borderRadius(20)
+        .onClick(() => {
+          // 返回到首页（底部导航）
+          router.replaceUrl({ url: 'view/BottomTabs' });
+        })
+
+        Text('个人中心')
+          .fontSize(18)
+          .fontWeight(FontWeight.Bold)
+          .fontColor('#333')
+          .layoutWeight(1)
+          .textAlign(TextAlign.Center)
+
+        // 占位，保持标题居中
+        Row().width(40).height(40)
+      }
+      .width('100%')
+      .height(56)
+      .padding({ left: 16, right: 16 })
+      .backgroundColor('#fff')
+
       if (this.isLoggedIn) {
         // 已登录状态
         this.buildLoggedInContent()
@@ -117,7 +149,7 @@ struct ProfilePage {
       .width('100%')
       .padding(24)
       .backgroundColor('#fff')
-      .margin({ bottom: 12 })
+      .margin({ top: 12, bottom: 12 })
 
       // 功能菜单区域
       Column() {
@@ -144,7 +176,7 @@ struct ProfilePage {
         .onClick(() => this.handleLogout())
     }
     .width('100%')
-    .height('100%')
+    .layoutWeight(1)
   }
 
   /**
@@ -184,9 +216,10 @@ struct ProfilePage {
       .padding(48)
       .backgroundColor('#fff')
       .justifyContent(FlexAlign.Center)
+      .margin({ top: 12 })
     }
     .width('100%')
-    .height('100%')
+    .layoutWeight(1)
     .justifyContent(FlexAlign.Center)
   }
 

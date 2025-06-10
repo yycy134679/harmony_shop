@@ -6,21 +6,29 @@ import { Address } from '../model/Address';
 import common from '@ohos.app.ability.common';
 
 /**
- * 地址管理页面
+ * 地址选择页面
  */
 @Entry
 @Component
-struct AddressManagementPage {
+struct AddressSelectionPage {
   @State addresses: Address[] = [];
   @State isLoading: boolean = true;
+  @State selectedAddressId: string = '';
   private addressViewModel: AddressViewModel = new AddressViewModel();
 
   async aboutToAppear() {
     try {
       await this.addressViewModel.init(getContext(this) as common.UIAbilityContext);
+      
+      // 获取传入的已选择地址ID
+      const params = router.getParams() as Record<string, Object>;
+      if (params && params.selectedAddressId) {
+        this.selectedAddressId = params.selectedAddressId as string;
+      }
+      
       await this.loadAddresses();
     } catch (error) {
-      console.error('Failed to initialize AddressManagementPage:', error);
+      console.error('Failed to initialize AddressSelectionPage:', error);
       this.isLoading = false;
     }
   }
@@ -44,6 +52,18 @@ struct AddressManagementPage {
   }
 
   /**
+   * 选择地址
+   */
+  private selectAddress(address: Address): void {
+    router.back({
+      url: 'pages/OrderConfirmationPage',
+      params: {
+        selectedAddress: address
+      }
+    });
+  }
+
+  /**
    * 新增地址
    */
   private addAddress(): void {
@@ -54,78 +74,10 @@ struct AddressManagementPage {
    * 编辑地址
    */
   private editAddress(address: Address): void {
-    router.pushUrl({
+    router.pushUrl({ 
       url: 'pages/AddressEditPage',
       params: { address: address }
     });
-  }
-
-  /**
-   * 删除地址
-   */
-  private deleteAddress(address: Address): void {
-    AlertDialog.show({
-      title: '确认删除',
-      message: `确定要删除地址"${address.fullAddress}"吗？`,
-      primaryButton: {
-        value: '取消',
-        action: () => {}
-      },
-      secondaryButton: {
-        value: '删除',
-        fontColor: '#ff4444',
-        action: async () => {
-          try {
-            const result = await this.addressViewModel.deleteAddress(address.id);
-            if (result.success) {
-              promptAction.showToast({
-                message: result.message,
-                duration: 2000
-              });
-              await this.loadAddresses(); // 重新加载列表
-            } else {
-              promptAction.showToast({
-                message: result.message,
-                duration: 2000
-              });
-            }
-          } catch (error) {
-            console.error('Failed to delete address:', error);
-            promptAction.showToast({
-              message: '删除失败，请重试',
-              duration: 2000
-            });
-          }
-        }
-      }
-    });
-  }
-
-  /**
-   * 设置默认地址
-   */
-  private async setDefaultAddress(address: Address): Promise<void> {
-    try {
-      const result = await this.addressViewModel.setDefaultAddress(address.id);
-      if (result.success) {
-        promptAction.showToast({
-          message: result.message,
-          duration: 2000
-        });
-        await this.loadAddresses(); // 重新加载列表
-      } else {
-        promptAction.showToast({
-          message: result.message,
-          duration: 2000
-        });
-      }
-    } catch (error) {
-      console.error('Failed to set default address:', error);
-      promptAction.showToast({
-        message: '设置失败，请重试',
-        duration: 2000
-      });
-    }
   }
 
   build() {
@@ -144,7 +96,7 @@ struct AddressManagementPage {
         .borderRadius(20)
         .onClick(() => router.back())
 
-        Text('地址管理')
+        Text('选择收货地址')
           .fontSize(18)
           .fontWeight(FontWeight.Bold)
           .fontColor('#333')
@@ -220,13 +172,78 @@ struct AddressManagementPage {
         Scroll() {
           Column() {
             ForEach(this.addresses, (address: Address) => {
-              AddressItem({
-                address: address,
-                showActions: true,
-                onEdit: (addr: Address) => this.editAddress(addr),
-                onDelete: (addr: Address) => this.deleteAddress(addr),
-                onSetDefault: (addr: Address) => this.setDefaultAddress(addr)
-              })
+              Column() {
+                Row() {
+                  // 选择状态指示器
+                  Row() {
+                    if (this.selectedAddressId === address.id || address.isDefault) {
+                      Image($r('sys.symbol.checkmark_circle_fill'))
+                        .width(20)
+                        .height(20)
+                        .fillColor('#ff6b35')
+                    } else {
+                      Image($r('sys.symbol.circle'))
+                        .width(20)
+                        .height(20)
+                        .fillColor('#ddd')
+                    }
+                  }
+                  .width(40)
+                  .justifyContent(FlexAlign.Center)
+
+                  // 地址信息
+                  Column() {
+                    Row() {
+                      Text(address.recipientName)
+                        .fontSize(16)
+                        .fontWeight(FontWeight.Medium)
+                        .fontColor('#333')
+                        .margin({ right: 12 })
+
+                      Text(address.phone)
+                        .fontSize(14)
+                        .fontColor('#666')
+
+                      if (address.isDefault) {
+                        Text('默认')
+                          .fontSize(12)
+                          .fontColor('#fff')
+                          .backgroundColor('#ff6b35')
+                          .padding({ left: 8, right: 8, top: 2, bottom: 2 })
+                          .borderRadius(10)
+                          .margin({ left: 12 })
+                      }
+                    }
+                    .width('100%')
+                    .margin({ bottom: 8 })
+
+                    Text(address.fullAddress)
+                      .fontSize(14)
+                      .fontColor('#666')
+                      .maxLines(2)
+                      .textOverflow({ overflow: TextOverflow.Ellipsis })
+                      .width('100%')
+                  }
+                  .layoutWeight(1)
+                  .alignItems(HorizontalAlign.Start)
+
+                  // 编辑按钮
+                  Button('编辑')
+                    .fontSize(12)
+                    .fontColor('#ff6b35')
+                    .backgroundColor('transparent')
+                    .border({ width: 1, color: '#ff6b35' })
+                    .borderRadius(4)
+                    .padding({ left: 12, right: 12, top: 6, bottom: 6 })
+                    .onClick(() => this.editAddress(address))
+                }
+                .width('100%')
+                .padding(16)
+                .backgroundColor('#fff')
+                .borderRadius(8)
+                .margin({ bottom: 12 })
+                .onClick(() => this.selectAddress(address))
+              }
             }, (address: Address) => address.id)
           }
           .padding(16)

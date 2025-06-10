@@ -67,13 +67,14 @@ struct DetailsPage {
         // 收藏按钮
         Button({ type: ButtonType.Circle }) {
           Image(this.isFavorite ? $r('sys.symbol.heart_fill') : $r('sys.symbol.heart'))
-            .width(24)
-            .height(24)
-            .fillColor(this.isFavorite ? '#ff6b35' : '#666')
+            .width(20)
+            .height(20)
+            .fillColor(this.isFavorite ? '#E41F19' : '#666')
         }
         .width(40)
         .height(40)
-        .backgroundColor('#F5F5F5')
+        .backgroundColor('rgba(245, 245, 245, 0.8)')
+        .border({ width: 1, color: 'rgba(0, 0, 0, 0.1)' })
         .onClick(async () => {
           if (!this.isLoggedIn) {
             promptAction.showToast({

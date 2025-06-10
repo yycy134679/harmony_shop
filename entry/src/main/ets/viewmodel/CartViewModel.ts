@@ -1,14 +1,31 @@
 import { CartItem } from '../model/CartItem';
 import { Product } from '../model/Product';
 import { Constants } from '../common/Constants';
+import { OrderViewModel } from './OrderViewModel';
+import { AddressViewModel } from './AddressViewModel';
+import { Address } from '../model/Address';
+import common from '@ohos.app.ability.common';
 
 /**
  * 购物车视图模型 - 购物车的业务逻辑和状态管理
  */
 export class CartViewModel {
+  private orderViewModel: OrderViewModel;
+  private addressViewModel: AddressViewModel;
+
   constructor() {
     // 初始化购物车状态
     this.initializeCart();
+    this.orderViewModel = new OrderViewModel();
+    this.addressViewModel = new AddressViewModel();
+  }
+
+  /**
+   * 初始化服务
+   */
+  async init(context: common.UIAbilityContext): Promise<void> {
+    await this.orderViewModel.init(context);
+    await this.addressViewModel.init(context);
   }
 
   /**
@@ -144,5 +161,98 @@ export class CartViewModel {
    */
   formatPrice(price: number): string {
     return `¥${price.toFixed(2)}`;
+  }
+
+  /**
+   * 获取默认收货地址
+   */
+  async getDefaultAddress(): Promise<Address | null> {
+    try {
+      return await this.addressViewModel.getDefaultAddress();
+    } catch (error) {
+      console.error('Failed to get default address:', error);
+      return null;
+    }
+  }
+
+  /**
+   * 获取所有收货地址
+   */
+  async getAllAddresses(): Promise<Address[]> {
+    try {
+      return await this.addressViewModel.getAddresses();
+    } catch (error) {
+      console.error('Failed to get addresses:', error);
+      return [];
+    }
+  }
+
+  /**
+   * 创建订单并清空购物车
+   */
+  async createOrderAndClearCart(
+    shippingAddress: Address,
+    paymentMethod: '微信支付' | '支付宝' | '云闪付'
+  ): Promise<{ success: boolean; orderId?: string; message: string }> {
+    try {
+      const cartItems = this.getCartItems();
+      if (cartItems.length === 0) {
+        return { success: false, message: '购物车为空' };
+      }
+
+      // 创建订单
+      const result = await this.orderViewModel.createOrder(cartItems, shippingAddress, paymentMethod);
+
+      if (result.success) {
+        // 订单创建成功，清空购物车
+        this.clearCart();
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Failed to create order and clear cart:', error);
+      return { success: false, message: '创建订单失败，请重试' };
+    }
+  }
+
+  /**
+   * 验证购物车是否可以结算
+   */
+  canCheckout(): { canCheckout: boolean; message: string } {
+    const cartItems = this.getCartItems();
+
+    if (cartItems.length === 0) {
+      return { canCheckout: false, message: '购物车为空' };
+    }
+
+    // 检查是否有无效商品（价格为0或负数）
+    const invalidItems = cartItems.filter(item => item.product.price <= 0);
+    if (invalidItems.length > 0) {
+      return { canCheckout: false, message: '购物车中存在无效商品' };
+    }
+
+    return { canCheckout: true, message: '' };
+  }
+
+  /**
+   * 获取购物车摘要信息
+   */
+  getCartSummary(): {
+    totalItems: number;
+    totalQuantity: number;
+    totalPrice: number;
+    formattedTotalPrice: string;
+  } {
+    const cartItems = this.getCartItems();
+    const totalItems = cartItems.length;
+    const totalQuantity = this.getTotalQuantity();
+    const totalPrice = this.getTotalPrice();
+
+    return {
+      totalItems,
+      totalQuantity,
+      totalPrice,
+      formattedTotalPrice: this.formatPrice(totalPrice)
+    };
   }
 }
