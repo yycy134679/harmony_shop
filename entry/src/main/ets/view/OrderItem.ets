@@ -16,15 +16,15 @@ export struct OrderItem {
       Row() {
         Column() {
           Text(`订单号：${this.order.orderId}`)
-            .fontSize(14)
+            .fontSize(13)
             .fontColor('#333')
             .fontWeight(FontWeight.Medium)
             .width('100%')
             .textAlign(TextAlign.Start)
-            .margin({ bottom: 4 })
+            .margin({ bottom: 2 })
 
           Text(this.orderViewModel.formatOrderTime(this.order.createTime))
-            .fontSize(12)
+            .fontSize(11)
             .fontColor('#999')
             .width('100%')
             .textAlign(TextAlign.Start)
@@ -33,102 +33,89 @@ export struct OrderItem {
         .alignItems(HorizontalAlign.Start)
 
         Text(this.orderViewModel.getStatusDisplayText(this.order.status))
-          .fontSize(14)
+          .fontSize(13)
           .fontColor(this.orderViewModel.getStatusColor(this.order.status))
           .fontWeight(FontWeight.Medium)
       }
       .width('100%')
-      .margin({ bottom: 12 })
+      .margin({ bottom: 6 })
 
       // 商品信息（显示第一个商品和总数量）
       Row() {
         // 商品图片（使用真实商品图片）
         Stack({ alignContent: Alignment.Center }) {
           Image(this.orderViewModel.getMainProductImageUrl(this.order))
-            .width(60)
-            .height(60)
+            .width(45)
+            .height(45)
             .objectFit(ImageFit.Contain)
             .backgroundColor('#FFFFFF')
             .onError(() => {
               console.error(`Failed to load order product image`);
             })
         }
-        .width(60)
-        .height(60)
+        .width(45)
+        .height(45)
         .backgroundColor('#f9f9f9')
-        .borderRadius(8)
-        .margin({ right: 12 })
+        .borderRadius(6)
+        .margin({ right: 10 })
 
         Column() {
           Text(this.orderViewModel.getMainProductName(this.order))
-            .fontSize(14)
+            .fontSize(13)
             .fontColor('#333')
-            .maxLines(2)
+            .maxLines(1)
             .textOverflow({ overflow: TextOverflow.Ellipsis })
             .width('100%')
-            .margin({ bottom: 4 })
+            .margin({ bottom: 2 })
 
           Row() {
             Text(`共${this.orderViewModel.calculateTotalQuantity(this.order)}件商品`)
-              .fontSize(12)
+              .fontSize(11)
               .fontColor('#666')
 
             Blank()
 
             Text(`¥${this.order.totalPrice.toFixed(2)}`)
-              .fontSize(16)
+              .fontSize(15)
               .fontColor('#E41F19')
               .fontWeight(FontWeight.Medium)
           }
           .width('100%')
+
+          Row() {
+            Text(`📍 ${this.order.shippingAddress.recipientName} ${this.order.shippingAddress.phone}`)
+              .fontSize(11)
+              .fontColor('#666')
+              .maxLines(1)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
+              .layoutWeight(1)
+              .margin({ top: 2 })
+
+            Button('查看详情')
+              .fontSize(11)
+              .fontColor('#ff6b35')
+              .backgroundColor('transparent')
+              .border({ width: 1, color: '#ff6b35' })
+              .borderRadius(3)
+              .padding({ left: 8, right: 8, top: 4, bottom: 4 })
+              .onClick(() => {
+                if (this.onViewDetail) {
+                  this.onViewDetail(this.order);
+                }
+              })
+          }
+          .width('100%')
+          .margin({ top: 2 })
         }
         .layoutWeight(1)
         .alignItems(HorizontalAlign.Start)
       }
       .width('100%')
-      .margin({ bottom: 12 })
-
-      // 收货地址信息
-      Row() {
-        Text('📍')
-          .fontSize(12)
-          .margin({ right: 6 })
-
-        Text(`${this.order.shippingAddress.recipientName} ${this.order.shippingAddress.phone}`)
-          .fontSize(12)
-          .fontColor('#666')
-          .layoutWeight(1)
-      }
-      .width('100%')
-      .margin({ bottom: 12 })
-
-      // 操作按钮区域
-      Row() {
-        Text(`支付方式：${this.order.paymentMethod}`)
-          .fontSize(12)
-          .fontColor('#666')
-
-        Blank()
-
-        Button('查看详情')
-          .fontSize(12)
-          .fontColor('#ff6b35')
-          .backgroundColor('transparent')
-          .border({ width: 1, color: '#ff6b35' })
-          .borderRadius(4)
-          .padding({ left: 12, right: 12, top: 6, bottom: 6 })
-          .onClick(() => {
-            if (this.onViewDetail) {
-              this.onViewDetail(this.order);
-            }
-          })
-      }
-      .width('100%')
     }
     .width('100%')
-    .padding(16)
+    .padding(10)
     .backgroundColor('#fff')
-    .borderRadius(8)
-    .margin({ bottom: 12 })
+    .borderRadius(6)
+    .margin({ bottom: 6 })
   }
 }

@@ -175,7 +175,7 @@ struct OrderListPage {
         .width('100%')
         .padding(12)
         .backgroundColor('#fff')
-        .margin({ top: 4, left: 16, right: 16 })
+        .margin({ top: 0, left: 16, right: 16, bottom: 0 })
         .borderRadius(8)
       }
 
@@ -193,7 +193,8 @@ struct OrderListPage {
         }
         .width('100%')
         .layoutWeight(1)
-        .justifyContent(FlexAlign.Center)
+        .padding({ top: 60 })
+        .justifyContent(FlexAlign.Start)
       } else if (this.orders.length === 0) {
         // 空状态
         Column() {
@@ -225,7 +226,8 @@ struct OrderListPage {
         }
         .width('100%')
         .layoutWeight(1)
-        .justifyContent(FlexAlign.Center)
+        .padding({ top: 60 })
+        .justifyContent(FlexAlign.Start)
       } else {
         // 订单列表
         Scroll() {
@@ -237,13 +239,23 @@ struct OrderListPage {
               })
             }, (order: Order) => order.orderId)
           }
+          .width('100%')
+          .alignItems(HorizontalAlign.Start)
+          .justifyContent(FlexAlign.Start)
           .padding({ left: 16, right: 16, top: 8, bottom: 16 })
         }
+        .width('100%')
+        .height('100%')
         .layoutWeight(1)
+        .align(Alignment.TopStart)
+        .scrollable(ScrollDirection.Vertical)
+        .scrollBar(BarState.Off)
       }
     }
     .width('100%')
     .height('100%')
     .backgroundColor('#f5f5f5')
+    .alignItems(HorizontalAlign.Start)
+    .justifyContent(FlexAlign.Start)
   }
 }
