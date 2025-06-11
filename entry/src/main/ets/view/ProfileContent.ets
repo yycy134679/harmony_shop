@@ -78,10 +78,8 @@ export struct ProfileContent {
       // 用户信息区域
       Column() {
         // 头像
-        Image($r('sys.symbol.person'))
-          .width(80)
-          .height(80)
-          .fillColor('#ff6b35')
+        Text('👤')
+          .fontSize(60)
           .margin({ bottom: 12 })
 
         // 用户名
@@ -142,10 +140,9 @@ export struct ProfileContent {
     Column() {
       // 未登录提示区域
       Column() {
-        Image($r('sys.symbol.person'))
-          .width(80)
-          .height(80)
-          .fillColor('#ccc')
+        Text('👤')
+          .fontSize(60)
+          .fontColor('#ccc')
           .margin({ bottom: 16 })
 
         Text('您还未登录')

@@ -85,10 +85,10 @@ struct AddressSelectionPage {
       // 标题栏
       Row() {
         Button() {
-          Image($r('sys.symbol.chevron_left'))
-            .width(24)
-            .height(24)
-            .fillColor('#333')
+          Text('←')
+            .fontSize(20)
+            .fontColor('#333')
+            .fontWeight(FontWeight.Bold)
         }
         .width(40)
         .height(40)
@@ -105,10 +105,10 @@ struct AddressSelectionPage {
 
         // 新增按钮
         Button() {
-          Image($r('sys.symbol.plus'))
-            .width(24)
-            .height(24)
-            .fillColor('#ff6b35')
+          Text('+')
+            .fontSize(20)
+            .fontColor('#ff6b35')
+            .fontWeight(FontWeight.Bold)
         }
         .width(40)
         .height(40)
@@ -139,10 +139,9 @@ struct AddressSelectionPage {
       } else if (this.addresses.length === 0) {
         // 空状态
         Column() {
-          Image($r('sys.symbol.house'))
-            .width(80)
-            .height(80)
-            .fillColor('#ddd')
+          Text('🏠')
+            .fontSize(60)
+            .fontColor('#ddd')
             .margin({ bottom: 16 })
 
           Text('暂无收货地址')
@@ -177,15 +176,14 @@ struct AddressSelectionPage {
                   // 选择状态指示器
                   Row() {
                     if (this.selectedAddressId === address.id || address.isDefault) {
-                      Image($r('sys.symbol.checkmark_circle_fill'))
-                        .width(20)
-                        .height(20)
-                        .fillColor('#ff6b35')
+                      Text('✓')
+                        .fontSize(16)
+                        .fontColor('#ff6b35')
+                        .fontWeight(FontWeight.Bold)
                     } else {
-                      Image($r('sys.symbol.circle'))
-                        .width(20)
-                        .height(20)
-                        .fillColor('#ddd')
+                      Text('○')
+                        .fontSize(16)
+                        .fontColor('#ddd')
                     }
                   }
                   .width(40)

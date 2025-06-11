@@ -21,6 +21,9 @@ export struct IndexContent {
   // 登录状态管理
   @StorageLink(Constants.IS_LOGGED_IN) isLoggedIn: boolean = false;
   @StorageLink(Constants.CURRENT_USER) currentUser: string = '';
+
+  // 监听登录状态变化
+  @Watch('onLoginStatusChanged') @StorageLink(Constants.IS_LOGGED_IN) watchIsLoggedIn: boolean = false;
   
   // State for the selected category
   @State selectedCategory: string = '手机'; // Default selected category
@@ -110,15 +113,42 @@ export struct IndexContent {
   @State filteredProducts: IndexProduct[] = [];
   // 搜索关键词
   @State searchKeyword: string = '';
+  // 商品收藏状态映射
+  @State favoriteStatusMap: Map<number, boolean> = new Map();
 
   // Lifecycle method: Called when the component is about to appear
   async aboutToAppear() {
     try {
       await this.favoriteViewModel.init(getContext(this) as common.UIAbilityContext);
+      // 初始化收藏状态
+      await this.initializeFavoriteStatus();
     } catch (error) {
       console.error('Failed to initialize FavoriteViewModel:', error);
     }
     this.updateFilteredProducts();
+  }
+
+  // 初始化所有商品的收藏状态
+  private async initializeFavoriteStatus() {
+    if (!this.isLoggedIn) {
+      // 如果未登录，清空收藏状态
+      this.favoriteStatusMap.clear();
+      return;
+    }
+
+    try {
+      for (const product of this.allProducts) {
+        const isFavorite = await this.favoriteViewModel.checkFavoriteStatus(product.id);
+        this.favoriteStatusMap.set(product.id, isFavorite);
+      }
+    } catch (error) {
+      console.error('Failed to initialize favorite status:', error);
+    }
+  }
+
+  // 监听登录状态变化
+  private async onLoginStatusChanged() {
+    await this.initializeFavoriteStatus();
   }
 
   // Method to update the filtered products list
@@ -266,16 +296,20 @@ export struct IndexContent {
                   })
 
                 // 收藏按钮
-                Button({ type: ButtonType.Circle }) {
-                  Text('♡')
-                    .fontSize(18)
-                    .fontColor('#ff6b35')
-                    .fontWeight(FontWeight.Bold)
+                Button({ type: ButtonType.Capsule }) {
+                  Text(this.favoriteStatusMap.get(product.id) ? '已收藏' : '收藏')
+                    .fontSize(12)
+                    .fontColor(this.favoriteStatusMap.get(product.id) ? '#FFFFFF' : '#666666')
+                    .fontWeight(FontWeight.Medium)
                 }
-                .width(36)
-                .height(36)
-                .backgroundColor('rgba(255, 255, 255, 0.9)')
-                .position({ x: '85%', y: 8 })
+                .height(28)
+                .padding({ left: 12, right: 12 })
+                .backgroundColor(this.favoriteStatusMap.get(product.id) ? '#E41F19' : 'rgba(255, 255, 255, 0.9)')
+                .border({
+                  width: 1,
+                  color: this.favoriteStatusMap.get(product.id) ? '#E41F19' : '#E0E0E0'
+                })
+                .position({ x: '75%', y: 8 })
                 .onClick(async () => {
                   // 检查登录状态
                   if (!this.isLoggedIn) {
@@ -291,6 +325,8 @@ export struct IndexContent {
                   try {
                     const result = await this.favoriteViewModel.toggleFavorite(product.id);
                     if (result.success) {
+                      // 更新本地收藏状态
+                      this.favoriteStatusMap.set(product.id, result.isFavorite);
                       promptAction.showToast({
                         message: result.message,
                         duration: 2000

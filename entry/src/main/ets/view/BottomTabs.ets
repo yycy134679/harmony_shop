@@ -27,19 +27,19 @@ struct BottomTabs {
       TabContent() {
         IndexContent()
       }
-      .tabBar(this.TabBuilder('首页', 0, $r('sys.symbol.house')))
+      .tabBar(this.TabBuilder('首页', 0, null))
 
       // 购物车标签
       TabContent() {
         CartContent()
       }
-      .tabBar(this.TabBuilder('购物车', 1, $r('sys.symbol.bag'), this.getCartTotalQuantity()))
+      .tabBar(this.TabBuilder('购物车', 1, null, this.getCartTotalQuantity()))
 
       // 我的标签
       TabContent() {
         ProfileContent()
       }
-      .tabBar(this.TabBuilder('我的', 2, $r('sys.symbol.person')))
+      .tabBar(this.TabBuilder('我的', 2, null))
     }
     .onChange((index: number) => {
       this.currentIndex = index;
@@ -50,13 +50,13 @@ struct BottomTabs {
    * 构建标签栏项
    */
   @Builder
-  TabBuilder(title: string, targetIndex: number, icon: Resource, badgeCount?: number) {
+  TabBuilder(title: string, targetIndex: number, icon: Resource | null, badgeCount?: number) {
     Column() {
       Stack() {
-        Image(icon)
-          .width(24)
-          .height(24)
-          .fillColor(this.currentIndex === targetIndex ? '#ff6b35' : '#999')
+        // 使用文字图标替代系统图标
+        Text(this.getTabIcon(title))
+          .fontSize(20)
+          .fontColor(this.currentIndex === targetIndex ? '#ff6b35' : '#999')
 
         // 购物车徽章
         if (badgeCount && badgeCount > 0) {
@@ -80,5 +80,21 @@ struct BottomTabs {
     .width('100%')
     .height(56)
     .justifyContent(FlexAlign.Center)
+  }
+
+  /**
+   * 获取标签页图标
+   */
+  private getTabIcon(title: string): string {
+    switch (title) {
+      case '首页':
+        return '🏠';
+      case '购物车':
+        return '🛒';
+      case '我的':
+        return '👤';
+      default:
+        return '•';
+    }
   }
 }

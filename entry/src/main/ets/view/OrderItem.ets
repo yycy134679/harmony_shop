@@ -43,10 +43,11 @@ export struct OrderItem {
       // 商品信息（显示第一个商品和总数量）
       Row() {
         // 商品图片（使用第一个商品的图片，这里需要从DataSource获取）
-        Image($r('sys.symbol.bag'))
+        Text('🛍️')
+          .fontSize(40)
           .width(60)
           .height(60)
-          .fillColor('#ddd')
+          .textAlign(TextAlign.Center)
           .backgroundColor('#f9f9f9')
           .borderRadius(8)
           .margin({ right: 12 })
@@ -82,10 +83,8 @@ export struct OrderItem {
 
       // 收货地址信息
       Row() {
-        Image($r('sys.symbol.house'))
-          .width(16)
-          .height(16)
-          .fillColor('#666')
+        Text('📍')
+          .fontSize(12)
           .margin({ right: 6 })
 
         Text(`${this.order.shippingAddress.recipientName} ${this.order.shippingAddress.phone}`)

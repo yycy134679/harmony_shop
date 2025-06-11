@@ -96,10 +96,10 @@ struct EditProfilePage {
       // 标题栏
       Row() {
         Button() {
-          Image($r('sys.symbol.chevron_left'))
-            .width(24)
-            .height(24)
-            .fillColor('#333')
+          Text('←')
+            .fontSize(20)
+            .fontColor('#333')
+            .fontWeight(FontWeight.Bold)
         }
         .width(40)
         .height(40)

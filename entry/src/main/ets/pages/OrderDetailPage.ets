@@ -25,10 +25,10 @@ struct OrderDetailPage {
       // 标题栏
       Row() {
         Button() {
-          Image($r('sys.symbol.chevron_left'))
-            .width(24)
-            .height(24)
-            .fillColor('#333')
+          Text('←')
+            .fontSize(20)
+            .fontColor('#333')
+            .fontWeight(FontWeight.Bold)
         }
         .width(40)
         .height(40)
@@ -57,10 +57,10 @@ struct OrderDetailPage {
             // 订单状态
             Column() {
               Row() {
-                Image($r('sys.symbol.checkmark_circle_fill'))
-                  .width(24)
-                  .height(24)
-                  .fillColor(this.orderViewModel.getStatusColor(this.order.status))
+                Text('✓')
+                  .fontSize(20)
+                  .fontColor(this.orderViewModel.getStatusColor(this.order.status))
+                  .fontWeight(FontWeight.Bold)
                   .margin({ right: 12 })
 
                 Column() {
@@ -92,10 +92,8 @@ struct OrderDetailPage {
             // 收货地址
             Column() {
               Row() {
-                Image($r('sys.symbol.house'))
-                  .width(20)
-                  .height(20)
-                  .fillColor('#ff6b35')
+                Text('🏠')
+                  .fontSize(16)
                   .margin({ right: 8 })
 
                 Text('收货地址')
@@ -137,10 +135,8 @@ struct OrderDetailPage {
             // 商品列表
             Column() {
               Row() {
-                Image($r('sys.symbol.bag'))
-                  .width(20)
-                  .height(20)
-                  .fillColor('#ff6b35')
+                Text('🛍️')
+                  .fontSize(16)
                   .margin({ right: 8 })
 
                 Text('商品清单')
@@ -153,10 +149,11 @@ struct OrderDetailPage {
 
               ForEach(this.order.items, (item: OrderItemModel) => {
                 Row() {
-                  Image($r('sys.symbol.bag'))
+                  Text('🛍️')
+                    .fontSize(40)
                     .width(60)
                     .height(60)
-                    .fillColor('#ddd')
+                    .textAlign(TextAlign.Center)
                     .backgroundColor('#f9f9f9')
                     .borderRadius(8)
                     .margin({ right: 12 })

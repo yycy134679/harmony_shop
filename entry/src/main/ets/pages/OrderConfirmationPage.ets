@@ -163,10 +163,10 @@ struct OrderConfirmationPage {
       // 标题栏
       Row() {
         Button() {
-          Image($r('sys.symbol.chevron_left'))
-            .width(24)
-            .height(24)
-            .fillColor('#333')
+          Text('←')
+            .fontSize(20)
+            .fontColor('#333')
+            .fontWeight(FontWeight.Bold)
         }
         .width(40)
         .height(40)
@@ -193,10 +193,8 @@ struct OrderConfirmationPage {
           // 收货地址区域
           Column() {
             Row() {
-              Image($r('sys.symbol.house'))
-                .width(20)
-                .height(20)
-                .fillColor('#ff6b35')
+              Text('🏠')
+                .fontSize(16)
                 .margin({ right: 8 })
 
               Text('收货地址')
@@ -205,10 +203,9 @@ struct OrderConfirmationPage {
                 .fontColor('#333')
                 .layoutWeight(1)
 
-              Image($r('sys.symbol.chevron_right'))
-                .width(16)
-                .height(16)
-                .fillColor('#ccc')
+              Text('→')
+                .fontSize(14)
+                .fontColor('#ccc')
             }
             .width('100%')
             .margin({ bottom: 12 })
@@ -253,10 +250,8 @@ struct OrderConfirmationPage {
           // 商品列表
           Column() {
             Row() {
-              Image($r('sys.symbol.bag'))
-                .width(20)
-                .height(20)
-                .fillColor('#ff6b35')
+              Text('🛍️')
+                .fontSize(16)
                 .margin({ right: 8 })
 
               Text('商品清单')

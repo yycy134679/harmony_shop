@@ -72,10 +72,10 @@ struct ProfilePage {
       // 标题栏
       Row() {
         Button() {
-          Image($r('sys.symbol.chevron_left'))
-            .width(24)
-            .height(24)
-            .fillColor('#333')
+          Text('←')
+            .fontSize(20)
+            .fontColor('#333')
+            .fontWeight(FontWeight.Bold)
         }
         .width(40)
         .height(40)
@@ -123,10 +123,8 @@ struct ProfilePage {
       // 用户信息区域
       Column() {
         // 头像
-        Image($r('sys.symbol.person'))
-          .width(80)
-          .height(80)
-          .fillColor('#ff6b35')
+        Text('👤')
+          .fontSize(60)
           .margin({ bottom: 12 })
 
         // 用户名
@@ -153,13 +151,13 @@ struct ProfilePage {
 
       // 功能菜单区域
       Column() {
-        this.buildMenuItem('我的订单', $r('sys.symbol.list_bullet'), () => this.goToOrders())
+        this.buildMenuItem('我的订单', '📋', () => this.goToOrders())
         Divider().color('#f0f0f0')
-        this.buildMenuItem('我的收藏', $r('sys.symbol.heart'), () => this.goToFavorites())
+        this.buildMenuItem('我的收藏', '❤️', () => this.goToFavorites())
         Divider().color('#f0f0f0')
-        this.buildMenuItem('地址管理', $r('sys.symbol.house'), () => this.goToAddressManagement())
+        this.buildMenuItem('地址管理', '🏠', () => this.goToAddressManagement())
         Divider().color('#f0f0f0')
-        this.buildMenuItem('修改信息', $r('sys.symbol.person'), () => this.goToEditProfile())
+        this.buildMenuItem('修改信息', '👤', () => this.goToEditProfile())
       }
       .backgroundColor('#fff')
       .borderRadius(8)
@@ -187,10 +185,9 @@ struct ProfilePage {
     Column() {
       // 未登录提示区域
       Column() {
-        Image($r('sys.symbol.person'))
-          .width(80)
-          .height(80)
-          .fillColor('#ccc')
+        Text('👤')
+          .fontSize(60)
+          .fontColor('#ccc')
           .margin({ bottom: 16 })
 
         Text('您还未登录')
@@ -227,12 +224,10 @@ struct ProfilePage {
    * 构建菜单项
    */
   @Builder
-  buildMenuItem(title: string, icon: Resource, onClick: () => void) {
+  buildMenuItem(title: string, icon: string, onClick: () => void) {
     Row() {
-      Image(icon)
-        .width(24)
-        .height(24)
-        .fillColor('#666')
+      Text(icon)
+        .fontSize(20)
         .margin({ right: 12 })
 
       Text(title)
@@ -240,10 +235,9 @@ struct ProfilePage {
         .fontColor('#333')
         .layoutWeight(1)
 
-      Image($r('sys.symbol.chevron_right'))
-        .width(16)
-        .height(16)
-        .fillColor('#ccc')
+      Text('→')
+        .fontSize(14)
+        .fontColor('#ccc')
     }
     .width('100%')
     .height(56)
