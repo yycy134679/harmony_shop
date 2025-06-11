@@ -35,14 +35,16 @@ export class ProfileViewModel {
         return null;
       }
 
-      // 这里需要扩展 UserService 来获取用户详细信息
-      // 暂时返回基本信息
-      return {
-        username: currentUser,
-        password: '', // 不返回密码
-        phone: '138****8888', // 占位数据
-        email: ''
-      };
+      // 从UserService获取用户详细信息
+      const userInfo = await this.userService.getUserByUsername(currentUser);
+      if (userInfo) {
+        // 不返回密码信息
+        return {
+          ...userInfo,
+          password: ''
+        };
+      }
+      return null;
     } catch (error) {
       console.error('Failed to get current user info:', error);
       return null;

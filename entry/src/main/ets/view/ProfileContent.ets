@@ -1,6 +1,10 @@
 import router from '@ohos.router';
 import { Constants } from '../common/Constants';
 import { UserViewModel } from '../viewmodel/UserViewModel';
+import { ProfileViewModel } from '../viewmodel/ProfileViewModel';
+import { User } from '../model/User';
+import { Address } from '../model/Address';
+import common from '@ohos.app.ability.common';
 
 /**
  * 个人中心内容组件
@@ -9,7 +13,41 @@ import { UserViewModel } from '../viewmodel/UserViewModel';
 export struct ProfileContent {
   @StorageLink(Constants.IS_LOGGED_IN) isLoggedIn: boolean = false;
   @StorageLink(Constants.CURRENT_USER) currentUser: string = '';
+  @State userInfo: User | null = null;
+  @State defaultAddress: Address | null = null;
+  @State isLoading: boolean = false;
   private userViewModel: UserViewModel = new UserViewModel();
+  private profileViewModel: ProfileViewModel = new ProfileViewModel();
+
+  async aboutToAppear() {
+    try {
+      await this.profileViewModel.init(getContext(this) as common.UIAbilityContext);
+      if (this.isLoggedIn) {
+        await this.loadUserData();
+      }
+    } catch (error) {
+      console.error('Failed to initialize ProfileContent:', error);
+    }
+  }
+
+  /**
+   * 加载用户数据
+   */
+  private async loadUserData(): Promise<void> {
+    if (this.isLoading) return;
+
+    this.isLoading = true;
+    try {
+      // 获取用户信息
+      this.userInfo = await this.profileViewModel.getCurrentUserInfo();
+      // 获取默认地址
+      this.defaultAddress = await this.profileViewModel.getDefaultAddress();
+    } catch (error) {
+      console.error('Failed to load user data:', error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
 
   /**
    * 处理退出登录
@@ -67,6 +105,12 @@ export struct ProfileContent {
     .width('100%')
     .height('100%')
     .backgroundColor('#f5f5f5')
+    .onAppear(() => {
+      // 当组件显示时，如果已登录则加载用户数据
+      if (this.isLoggedIn) {
+        this.loadUserData();
+      }
+    })
   }
 
   /**
@@ -89,15 +133,30 @@ export struct ProfileContent {
           .fontColor('#333')
           .margin({ bottom: 8 })
 
-        // 个人信息展示区域（暂时显示占位文本）
-        Text('电话：138****8888')
-          .fontSize(14)
-          .fontColor('#666')
-          .margin({ bottom: 4 })
+        // 个人信息展示区域
+        if (this.userInfo?.phone) {
+          Text(`电话：${this.userInfo.phone}`)
+            .fontSize(14)
+            .fontColor('#666')
+            .margin({ bottom: 4 })
+        } else {
+          Text('电话：未设置')
+            .fontSize(14)
+            .fontColor('#999')
+            .margin({ bottom: 4 })
+        }
 
-        Text('默认地址：北京市朝阳区...')
-          .fontSize(14)
-          .fontColor('#666')
+        if (this.defaultAddress) {
+          Text(`默认地址：${this.defaultAddress.fullAddress}`)
+            .fontSize(14)
+            .fontColor('#666')
+            .maxLines(2)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+        } else {
+          Text('默认地址：未设置')
+            .fontSize(14)
+            .fontColor('#999')
+        }
       }
       .width('100%')
       .padding(24)

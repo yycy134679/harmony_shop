@@ -10,6 +10,7 @@ struct RegisterPage {
   @State username: string = '';
   @State password: string = '';
   @State confirmPassword: string = '';
+  @State phone: string = '';
   private viewModel: UserViewModel = new UserViewModel();
   private context = getContext(this) as common.UIAbilityContext;
 
@@ -24,6 +25,13 @@ struct RegisterPage {
         .width('80%')
         .onChange((value) => {
           this.username = value;
+        })
+
+      TextInput({ placeholder: '请输入手机号' })
+        .width('80%')
+        .type(InputType.PhoneNumber)
+        .onChange((value) => {
+          this.phone = value;
         })
 
       TextInput({ placeholder: '请设置密码' })
@@ -44,11 +52,36 @@ struct RegisterPage {
         .width('80%')
         .margin({ top: 20 })
         .onClick(async () => {
+          // 基本验证
+          if (!this.username.trim()) {
+            promptAction.showToast({ message: '请输入用户名' });
+            return;
+          }
+          if (!this.phone.trim()) {
+            promptAction.showToast({ message: '请输入手机号' });
+            return;
+          }
+          if (!this.password.trim()) {
+            promptAction.showToast({ message: '请输入密码' });
+            return;
+          }
           if (this.password !== this.confirmPassword) {
             promptAction.showToast({ message: '两次输入的密码不一致' });
             return;
           }
-          const user: User = { username: this.username, password: this.password };
+
+          // 验证手机号格式
+          const phoneRegex = /^\d{11}$/;
+          if (!phoneRegex.test(this.phone)) {
+            promptAction.showToast({ message: '请输入正确的11位手机号' });
+            return;
+          }
+
+          const user: User = {
+            username: this.username,
+            password: this.password,
+            phone: this.phone
+          };
           await this.viewModel.init(this.context);
           const result = await this.viewModel.register(user);
           if (result.success) {
