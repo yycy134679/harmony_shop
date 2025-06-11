@@ -345,9 +345,10 @@ struct DetailsPage {
               }
 
               if (this.product) {
+                // 立即购买：先添加到购物车，然后直接跳转到订单确认页面
                 this.cartViewModel.addToCart(this.product, this.quantity);
                 router.pushUrl({
-                  url: 'pages/CartPage'
+                  url: 'pages/OrderConfirmationPage'
                 });
               }
             })

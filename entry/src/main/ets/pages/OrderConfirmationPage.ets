@@ -16,6 +16,7 @@ struct OrderConfirmationPage {
   @State totalPrice: number = 0;
   @State isLoading: boolean = false;
   @State paymentMethod: '微信支付' | '支付宝' | '云闪付' = '微信支付';
+  @State showPaymentDialog: boolean = false;
   private cartViewModel: CartViewModel = new CartViewModel();
 
   async aboutToAppear() {
@@ -69,7 +70,7 @@ struct OrderConfirmationPage {
   /**
    * 显示支付方式选择对话框
    */
-  private showPaymentDialog(): void {
+  private openPaymentDialog(): void {
     if (!this.selectedAddress) {
       promptAction.showToast({
         message: '请先选择收货地址',
@@ -77,34 +78,21 @@ struct OrderConfirmationPage {
       });
       return;
     }
+    this.showPaymentDialog = true;
+  }
 
-    ActionSheet.show({
-      title: '选择支付方式',
-      message: '请选择您的支付方式',
-      sheets: [
-        {
-          title: '微信支付',
-          action: () => {
-            this.paymentMethod = '微信支付';
-            this.processPayment();
-          }
-        },
-        {
-          title: '支付宝',
-          action: () => {
-            this.paymentMethod = '支付宝';
-            this.processPayment();
-          }
-        },
-        {
-          title: '云闪付',
-          action: () => {
-            this.paymentMethod = '云闪付';
-            this.processPayment();
-          }
-        }
-      ]
-    });
+  /**
+   * 关闭支付方式选择对话框
+   */
+  private closePaymentDialog(): void {
+    this.showPaymentDialog = false;
+  }
+
+  /**
+   * 选择支付方式
+   */
+  private selectPaymentMethod(method: '微信支付' | '支付宝' | '云闪付'): void {
+    this.paymentMethod = method;
   }
 
   /**
@@ -159,7 +147,9 @@ struct OrderConfirmationPage {
   }
 
   build() {
-    Column() {
+    Stack() {
+      // 主要内容
+      Column() {
       // 标题栏
       Row() {
         Button() {
@@ -389,16 +379,208 @@ struct OrderConfirmationPage {
           .fontSize(16)
           .borderRadius(22)
           .enabled(!this.isLoading)
-          .onClick(() => this.showPaymentDialog())
+          .onClick(() => this.openPaymentDialog())
       }
       .width('100%')
       .height(80)
       .padding({ left: 16, right: 16 })
       .backgroundColor('#fff')
       .shadow({ radius: 8, color: 'rgba(0, 0, 0, 0.1)', offsetY: -2 })
+      }
+      .width('100%')
+      .height('100%')
+      .backgroundColor('#f5f5f5')
+
+      // 支付方式选择弹窗
+      if (this.showPaymentDialog) {
+        this.buildPaymentDialog()
+      }
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#f5f5f5')
+  }
+
+  /**
+   * 构建支付方式选择弹窗
+   */
+  @Builder
+  buildPaymentDialog() {
+    Stack() {
+      // 遮罩层
+      Column()
+        .width('100%')
+        .height('100%')
+        .backgroundColor('rgba(0, 0, 0, 0.5)')
+        .onClick(() => this.closePaymentDialog())
+
+      // 弹窗内容
+      Column() {
+        // 弹窗顶部装饰条
+        Row()
+          .width(40)
+          .height(4)
+          .backgroundColor('#e0e0e0')
+          .borderRadius(2)
+          .margin({ top: 12, bottom: 16 })
+
+        // 弹窗标题
+        Row() {
+          Column() {
+            Text('选择支付方式')
+              .fontSize(20)
+              .fontWeight(FontWeight.Bold)
+              .fontColor('#333')
+              .margin({ bottom: 4 })
+
+            Text('请选择您的支付方式')
+              .fontSize(14)
+              .fontColor('#666')
+          }
+          .alignItems(HorizontalAlign.Start)
+          .layoutWeight(1)
+
+          Button() {
+            Text('×')
+              .fontSize(18)
+              .fontColor('#999')
+          }
+          .width(36)
+          .height(36)
+          .backgroundColor('#f5f5f5')
+          .borderRadius(18)
+          .onClick(() => this.closePaymentDialog())
+        }
+        .width('100%')
+        .padding({ left: 24, right: 24, bottom: 24 })
+
+        // 支付方式列表
+        Column() {
+          this.buildPaymentOption('微信支付', '💚', '微信支付', '#1AAD19')
+          this.buildPaymentOption('支付宝', '🔵', '支付宝', '#1677FF')
+          this.buildPaymentOption('云闪付', '🔴', '云闪付', '#E6002D')
+        }
+        .padding({ left: 24, right: 24 })
+        .margin({ bottom: 32 })
+
+        // 支付金额区域
+        Column() {
+          Row() {
+            Text('支付金额')
+              .fontSize(14)
+              .fontColor('#666')
+              .layoutWeight(1)
+
+            Text(`¥${this.totalPrice.toFixed(2)}`)
+              .fontSize(24)
+              .fontWeight(FontWeight.Bold)
+              .fontColor('#E41F19')
+          }
+          .width('100%')
+          .padding({ left: 24, right: 24, top: 20, bottom: 20 })
+        }
+        .width('100%')
+        .backgroundColor('#fafafa')
+        .margin({ bottom: 24 })
+
+        // 按钮区域
+        Row() {
+          Button('取消')
+            .width('calc(50% - 32vp)')
+            .height(48)
+            .backgroundColor('#f5f5f5')
+            .fontColor('#666')
+            .fontSize(16)
+            .borderRadius(24)
+            .onClick(() => this.closePaymentDialog())
+
+          Button('确认支付')
+            .width('calc(50% - 32vp)')
+            .height(48)
+            .backgroundColor('#E41F19')
+            .fontColor('#fff')
+            .fontSize(16)
+            .borderRadius(24)
+            .onClick(() => {
+              this.closePaymentDialog();
+              this.processPayment();
+            })
+        }
+        .width('100%')
+        .padding({ left: 24, right: 24 })
+        .justifyContent(FlexAlign.SpaceBetween)
+      }
+      .width('92%')
+      .constraintSize({ maxWidth: 400 })
+      .backgroundColor('#fff')
+      .borderRadius(20)
+      .shadow({ radius: 30, color: 'rgba(0, 0, 0, 0.15)', offsetY: 8 })
+      .padding({ bottom: 24 })
+    }
+    .width('100%')
+    .height('100%')
+    .position({ x: 0, y: 0 })
+    .zIndex(1000)
+  }
+
+  /**
+   * 构建支付方式选项
+   */
+  @Builder
+  buildPaymentOption(title: string, icon: string, method: '微信支付' | '支付宝' | '云闪付', brandColor: string) {
+    Row() {
+      // 支付方式图标容器
+      Row() {
+        Text(icon)
+          .fontSize(20)
+          .fontColor('#fff')
+      }
+      .width(40)
+      .height(40)
+      .backgroundColor(brandColor)
+      .borderRadius(8)
+      .justifyContent(FlexAlign.Center)
+      .margin({ right: 16 })
+
+      // 支付方式信息
+      Column() {
+        Text(title)
+          .fontSize(16)
+          .fontWeight(FontWeight.Medium)
+          .fontColor('#333')
+          .margin({ bottom: 2 })
+
+        Text('安全快捷支付')
+          .fontSize(12)
+          .fontColor('#999')
+      }
+      .alignItems(HorizontalAlign.Start)
+      .layoutWeight(1)
+
+      // 选中状态
+      Row() {
+        if (this.paymentMethod === method) {
+          Text('✓')
+            .fontSize(16)
+            .fontColor('#fff')
+            .fontWeight(FontWeight.Bold)
+        }
+      }
+      .width(24)
+      .height(24)
+      .backgroundColor(this.paymentMethod === method ? '#E41F19' : '#f0f0f0')
+      .borderRadius(12)
+      .justifyContent(FlexAlign.Center)
+    }
+    .width('100%')
+    .height(72)
+    .padding({ left: 20, right: 20, top: 8, bottom: 8 })
+    .backgroundColor(this.paymentMethod === method ? '#fff5f5' : '#fff')
+    .border({
+      width: this.paymentMethod === method ? 1 : 0,
+      color: this.paymentMethod === method ? '#E41F19' : 'transparent'
+    })
+    .borderRadius(8)
+    .margin({ bottom: 8 })
+    .onClick(() => this.selectPaymentMethod(method))
   }
 }

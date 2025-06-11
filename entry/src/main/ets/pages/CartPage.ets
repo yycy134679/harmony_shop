@@ -90,63 +90,47 @@ struct CartPage {
                 .alignItems(HorizontalAlign.Start)
                 .layoutWeight(1)
 
-                // 数量控制和删除
-                Column() {
-                  // 删除按钮
-                  Button('删除')
-                    .width(50)
-                    .height(24)
-                    .fontSize(10)
-                    .backgroundColor('#ff4444')
-                    .margin({ bottom: 8 })
+                // 数量控制
+                Row() {
+                  Text('-')
+                    .width(32)
+                    .height(32)
+                    .fontSize(20)
+                    .fontWeight(FontWeight.Bold)
+                    .textAlign(TextAlign.Center)
+                    .fontColor('#E41F19')
+                    .border({ width: 1, color: '#E41F19' })
+                    .borderRadius(4)
+                    .backgroundColor('#FFFFFF')
                     .onClick(() => {
-                      this.cartViewModel.removeFromCart(item.product.id);
+                      this.cartViewModel.decreaseQuantity(item.product.id);
                     })
 
-                  // 数量控制
-                  Row() {
-                    Text('-')
-                      .width(32)
-                      .height(32)
-                      .fontSize(20)
-                      .fontWeight(FontWeight.Bold)
-                      .textAlign(TextAlign.Center)
-                      .fontColor('#E41F19')
-                      .border({ width: 1, color: '#E41F19' })
-                      .borderRadius(4)
-                      .backgroundColor('#FFFFFF')
-                      .onClick(() => {
-                        this.cartViewModel.decreaseQuantity(item.product.id);
-                      })
+                  Text(item.quantity.toString())
+                    .width(40)
+                    .height(32)
+                    .textAlign(TextAlign.Center)
+                    .fontSize(16)
+                    .margin({ left: 8, right: 8 })
+                    .border({ width: 1, color: '#E0E0E0' })
+                    .borderRadius(4)
+                    .backgroundColor('#FFFFFF')
 
-                    Text(item.quantity.toString())
-                      .width(40)
-                      .height(32)
-                      .textAlign(TextAlign.Center)
-                      .fontSize(16)
-                      .margin({ left: 8, right: 8 })
-                      .border({ width: 1, color: '#E0E0E0' })
-                      .borderRadius(4)
-                      .backgroundColor('#FFFFFF')
-
-                    Text('+')
-                      .width(32)
-                      .height(32)
-                      .fontSize(20)
-                      .fontWeight(FontWeight.Bold)
-                      .textAlign(TextAlign.Center)
-                      .fontColor('#E41F19')
-                      .border({ width: 1, color: '#E41F19' })
-                      .borderRadius(4)
-                      .backgroundColor('#FFFFFF')
-                      .onClick(() => {
-                        this.cartViewModel.increaseQuantity(item.product.id);
-                      })
-                  }
-                  .justifyContent(FlexAlign.Center)
-                  .alignItems(VerticalAlign.Center)
+                  Text('+')
+                    .width(32)
+                    .height(32)
+                    .fontSize(20)
+                    .fontWeight(FontWeight.Bold)
+                    .textAlign(TextAlign.Center)
+                    .fontColor('#E41F19')
+                    .border({ width: 1, color: '#E41F19' })
+                    .borderRadius(4)
+                    .backgroundColor('#FFFFFF')
+                    .onClick(() => {
+                      this.cartViewModel.increaseQuantity(item.product.id);
+                    })
                 }
-                .alignItems(HorizontalAlign.End)
+                .alignItems(VerticalAlign.Center)
               }
               .width('100%')
               .padding(16)
