@@ -183,7 +183,9 @@ struct AddressManagementPage {
         }
         .width('100%')
         .layoutWeight(1)
-        .justifyContent(FlexAlign.Center)
+        .justifyContent(FlexAlign.Start)
+        .alignItems(HorizontalAlign.Center)
+        .padding({ top: 100 })
       } else if (this.addresses.length === 0) {
         // 空状态
         Column() {
@@ -213,7 +215,9 @@ struct AddressManagementPage {
         }
         .width('100%')
         .layoutWeight(1)
-        .justifyContent(FlexAlign.Center)
+        .justifyContent(FlexAlign.Start)
+        .alignItems(HorizontalAlign.Center)
+        .padding({ top: 100 })
       } else {
         // 地址列表
         Scroll() {
@@ -228,9 +232,12 @@ struct AddressManagementPage {
               })
             }, (address: Address) => address.id)
           }
+          .width('100%')
+          .alignItems(HorizontalAlign.Start)
           .padding(16)
         }
         .layoutWeight(1)
+        .align(Alignment.TopStart)
       }
     }
     .width('100%')
