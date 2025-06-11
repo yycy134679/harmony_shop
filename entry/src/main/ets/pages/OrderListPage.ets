@@ -34,6 +34,14 @@ struct OrderListPage {
   }
 
   /**
+   * 页面显示时刷新数据
+   */
+  async onPageShow() {
+    // 页面显示时刷新订单数据
+    await this.refreshOrders();
+  }
+
+  /**
    * 加载订单列表
    */
   private async loadOrders(): Promise<void> {
@@ -87,10 +95,10 @@ struct OrderListPage {
       // 标题栏
       Row() {
         Button() {
-          Image($r('sys.symbol.chevron_left'))
-            .width(24)
-            .height(24)
-            .fillColor('#333')
+          Text('←')
+            .fontSize(20)
+            .fontColor('#333')
+            .fontWeight(FontWeight.Bold)
         }
         .width(40)
         .height(40)
@@ -107,15 +115,14 @@ struct OrderListPage {
 
         // 刷新按钮
         Button() {
-          Image($r('sys.symbol.arrow_clockwise'))
-            .width(20)
-            .height(20)
-            .fillColor('#666')
+          Text('刷新')
+            .fontSize(12)
+            .fontColor('#666')
         }
-        .width(40)
-        .height(40)
+        .height(32)
+        .padding({ left: 8, right: 8 })
         .backgroundColor('#f0f0f0')
-        .borderRadius(20)
+        .borderRadius(16)
         .onClick(() => this.refreshOrders())
       }
       .width('100%')
@@ -190,10 +197,8 @@ struct OrderListPage {
       } else if (this.orders.length === 0) {
         // 空状态
         Column() {
-          Image($r('sys.symbol.list_bullet'))
-            .width(80)
-            .height(80)
-            .fillColor('#ddd')
+          Text('📋')
+            .fontSize(60)
             .margin({ bottom: 16 })
 
           Text('暂无订单')

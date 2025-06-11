@@ -65,16 +65,17 @@ struct DetailsPage {
         Blank()
 
         // 收藏按钮
-        Button({ type: ButtonType.Circle }) {
-          Image(this.isFavorite ? $r('sys.symbol.heart_fill') : $r('sys.symbol.heart'))
-            .width(20)
-            .height(20)
-            .fillColor(this.isFavorite ? '#E41F19' : '#666')
+        Button() {
+          Text(this.isFavorite ? '已收藏' : '收藏')
+            .fontSize(14)
+            .fontColor(this.isFavorite ? '#E41F19' : '#666')
+            .fontWeight(FontWeight.Medium)
         }
-        .width(40)
-        .height(40)
+        .height(32)
+        .padding({ left: 12, right: 12 })
         .backgroundColor('rgba(245, 245, 245, 0.8)')
-        .border({ width: 1, color: 'rgba(0, 0, 0, 0.1)' })
+        .border({ width: 1, color: this.isFavorite ? '#E41F19' : 'rgba(0, 0, 0, 0.1)' })
+        .borderRadius(16)
         .onClick(async () => {
           if (!this.isLoggedIn) {
             promptAction.showToast({

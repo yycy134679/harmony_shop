@@ -80,10 +80,10 @@ struct FavoriteListPage {
       // 标题栏
       Row() {
         Button() {
-          Image($r('sys.symbol.chevron_left'))
-            .width(24)
-            .height(24)
-            .fillColor('#333')
+          Text('←')
+            .fontSize(20)
+            .fontColor('#333')
+            .fontWeight(FontWeight.Bold)
         }
         .width(40)
         .height(40)
@@ -125,10 +125,8 @@ struct FavoriteListPage {
       } else if (this.favoriteProducts.length === 0) {
         // 空状态
         Column() {
-          Image($r('sys.symbol.heart'))
-            .width(80)
-            .height(80)
-            .fillColor('#ddd')
+          Text('💝')
+            .fontSize(60)
             .margin({ bottom: 16 })
 
           Text('暂无收藏商品')

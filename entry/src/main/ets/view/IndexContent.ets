@@ -123,16 +123,15 @@ export struct IndexContent {
 
   // Method to update the filtered products list
   updateFilteredProducts() {
-    let filtered = this.allProducts.filter(product => product.category === this.selectedCategory);
-
-    // 如果有搜索关键词，进一步过滤
+    // 如果有搜索关键词，搜索所有商品，不受类别限制
     if (this.searchKeyword.trim()) {
-      filtered = filtered.filter(product =>
+      this.filteredProducts = this.allProducts.filter(product =>
         product.name.toLowerCase().includes(this.searchKeyword.toLowerCase())
       );
+    } else {
+      // 没有搜索关键词时，按类别过滤
+      this.filteredProducts = this.allProducts.filter(product => product.category === this.selectedCategory);
     }
-
-    this.filteredProducts = filtered;
   }
 
   // 处理搜索输入变化
@@ -146,55 +145,55 @@ export struct IndexContent {
       // 1. Top Title Bar with modern design
       Row() {
         Text('拼夕夕商店')
-          .fontSize(22)
+          .fontSize(20)
           .fontWeight(FontWeight.Bold)
           .fontColor('#E41F19')
       }
       .width('100%')
-      .height(60)
-      .padding({ left: 20, right: 20 })
+      .height(44)
+      .padding({ left: 16, right: 16 })
       .backgroundColor('#FFFFFF')
-      .shadow({ radius: 8, color: 'rgba(0, 0, 0, 0.1)', offsetY: 2 })
+      .shadow({ radius: 6, color: 'rgba(0, 0, 0, 0.08)', offsetY: 1 })
       .justifyContent(FlexAlign.Center)
 
       // 2. 搜索框
       Row() {
         TextInput({ placeholder: '搜索商品...', text: this.searchKeyword })
           .layoutWeight(1)
-          .height(40)
+          .height(36)
           .backgroundColor('#f5f5f5')
-          .borderRadius(20)
-          .padding({ left: 16, right: 16 })
+          .borderRadius(18)
+          .padding({ left: 14, right: 14 })
           .onChange((value: string) => this.onSearchChange(value))
 
         if (this.searchKeyword.trim()) {
           Button('清空')
-            .height(32)
+            .height(28)
             .backgroundColor('transparent')
             .fontColor('#666')
-            .fontSize(14)
-            .margin({ left: 8 })
+            .fontSize(13)
+            .margin({ left: 6 })
             .onClick(() => this.onSearchChange(''))
         }
       }
       .width('100%')
-      .padding({ left: 20, right: 20, top: 12, bottom: 12 })
+      .padding({ left: 16, right: 16, top: 8, bottom: 8 })
       .backgroundColor('#fff')
 
       // 3. Welcome and Login Area
       Row() {
         Text('商品列表')
-          .fontSize(18)
+          .fontSize(16)
           .fontWeight(FontWeight.Medium)
           .layoutWeight(1)
           .textAlign(TextAlign.Start)
 
         Button({ type: ButtonType.Capsule }) {
           Text(this.isLoggedIn ? `欢迎您, ${this.currentUser}` : '欢迎您, 请登录')
-            .fontSize(14)
+            .fontSize(13)
             .fontColor('#FFFFFF')
         }
-        .height(36)
+        .height(32)
         .backgroundColor('#E41F19')
         .onClick(() => {
           if (!this.isLoggedIn) {
@@ -223,19 +222,19 @@ export struct IndexContent {
         })
       }
       .width('100%')
-      .padding({ left: 20, right: 20, top: 15, bottom: 15 })
+      .padding({ left: 16, right: 16, top: 8, bottom: 8 })
 
       // 4. Category Navigation Bar with pill design
       Scroll() {
-        Row({ space: 12 }) {
+        Row({ space: 10 }) {
           ForEach(this.categories, (category: string) => {
             Button({ type: ButtonType.Capsule }) {
               Text(category)
-                .fontSize(16)
+                .fontSize(14)
                 .fontColor(this.selectedCategory === category ? '#FFFFFF' : '#333333')
             }
-            .height(40)
-            .padding({ left: 20, right: 20 })
+            .height(34)
+            .padding({ left: 16, right: 16 })
             .backgroundColor(this.selectedCategory === category ? '#E41F19' : '#F5F5F5')
             .onClick(() => {
               this.selectedCategory = category;
@@ -243,15 +242,15 @@ export struct IndexContent {
             })
           }, (item: string) => item)
         }
-        .padding({ left: 20, right: 10 })
+        .padding({ left: 16, right: 8 })
       }
       .scrollable(ScrollDirection.Horizontal)
       .width('100%')
-      .height(60)
-      .margin({ bottom: 10 })
+      .height(50)
+      .margin({ bottom: 6 })
 
       // 5. Product List with card design
-      List({ space: 15 }) {
+      List({ space: 12 }) {
         ForEach(this.filteredProducts, (product: IndexProduct) => {
           ListItem() {
             Column() {
@@ -268,10 +267,10 @@ export struct IndexContent {
 
                 // 收藏按钮
                 Button({ type: ButtonType.Circle }) {
-                  Image($r('sys.symbol.heart'))
-                    .width(20)
-                    .height(20)
-                    .fillColor('#ff6b35')
+                  Text('♡')
+                    .fontSize(18)
+                    .fontColor('#ff6b35')
+                    .fontWeight(FontWeight.Bold)
                 }
                 .width(36)
                 .height(36)
@@ -322,8 +321,22 @@ export struct IndexContent {
                   .fontWeight(FontWeight.Medium)
                   .maxLines(2)
                   .textOverflow({ overflow: TextOverflow.Ellipsis })
-                  .margin({ bottom: 8 })
+                  .margin({ bottom: 4 })
                   .padding({ top: 5 })
+
+                // 在搜索时显示商品类别
+                if (this.searchKeyword.trim()) {
+                  Text(product.category)
+                    .fontSize(12)
+                    .fontColor('#666')
+                    .backgroundColor('#f0f0f0')
+                    .padding({ left: 8, right: 8, top: 2, bottom: 2 })
+                    .borderRadius(10)
+                    .margin({ bottom: 8 })
+                } else {
+                  // 非搜索状态下保持原有间距
+                  Blank().height(8)
+                }
 
                 Row() {
                   Text(product.price)
@@ -389,7 +402,7 @@ export struct IndexContent {
         }, (item: IndexProduct) => item.id.toString())
       }
       .layoutWeight(1)
-      .padding({ left: 20, right: 20, bottom: 20 })
+      .padding({ left: 16, right: 16, bottom: 12 })
       .backgroundColor('#F5F5F5')
     }
     .width('100%')

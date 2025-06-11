@@ -108,13 +108,13 @@ export struct ProfileContent {
 
       // 功能菜单区域
       Column() {
-        this.buildMenuItem('我的订单', $r('sys.symbol.list_bullet'), () => this.goToOrders())
+        this.buildMenuItemText('我的订单', '订单', () => this.goToOrders())
         Divider().color('#f0f0f0')
-        this.buildMenuItem('我的收藏', $r('sys.symbol.heart'), () => this.goToFavorites())
+        this.buildMenuItemText('我的收藏', '收藏', () => this.goToFavorites())
         Divider().color('#f0f0f0')
-        this.buildMenuItem('地址管理', $r('sys.symbol.house'), () => this.goToAddressManagement())
+        this.buildMenuItemText('地址管理', '地址', () => this.goToAddressManagement())
         Divider().color('#f0f0f0')
-        this.buildMenuItem('修改信息', $r('sys.symbol.person'), () => this.goToEditProfile())
+        this.buildMenuItemText('修改信息', '编辑', () => this.goToEditProfile())
       }
       .backgroundColor('#fff')
       .borderRadius(8)
@@ -178,7 +178,39 @@ export struct ProfileContent {
   }
 
   /**
-   * 构建菜单项
+   * 构建菜单项（文字版本）
+   */
+  @Builder
+  buildMenuItemText(title: string, iconText: string, onClick: () => void) {
+    Row() {
+      Text(iconText)
+        .width(32)
+        .height(32)
+        .fontSize(14)
+        .fontColor('#ff6b35')
+        .fontWeight(FontWeight.Medium)
+        .textAlign(TextAlign.Center)
+        .backgroundColor('#fff2f0')
+        .borderRadius(16)
+        .margin({ right: 12 })
+
+      Text(title)
+        .fontSize(16)
+        .fontColor('#333')
+        .layoutWeight(1)
+
+      Text('>')
+        .fontSize(16)
+        .fontColor('#ccc')
+    }
+    .width('100%')
+    .height(56)
+    .padding({ left: 16, right: 16 })
+    .onClick(onClick)
+  }
+
+  /**
+   * 构建菜单项（原版本保留）
    */
   @Builder
   buildMenuItem(title: string, icon: Resource, onClick: () => void) {
@@ -194,10 +226,9 @@ export struct ProfileContent {
         .fontColor('#333')
         .layoutWeight(1)
 
-      Image($r('sys.symbol.chevron_right'))
-        .width(16)
-        .height(16)
-        .fillColor('#ccc')
+      Text('>')
+        .fontSize(16)
+        .fontColor('#ccc')
     }
     .width('100%')
     .height(56)

@@ -24,10 +24,8 @@ struct CheckoutSuccessPage {
     Column() {
       // 成功图标和文字
       Column() {
-        Image($r('sys.symbol.checkmark_circle_fill'))
-          .width(80)
-          .height(80)
-          .fillColor('#4CAF50')
+        Text('✅')
+          .fontSize(60)
           .margin({ bottom: 20 })
 
         Text('支付成功！')
