@@ -120,10 +120,6 @@ harmony_shop/
    - 确保已安装HarmonyOS SDK
    - 在 File > Settings > HarmonyOS SDK 中配置SDK路径
 
-4. **运行项目**
-   - 点击工具栏的预览按钮 (Preview)
-   - 或使用快捷键 `Ctrl+Shift+P` (Windows/Linux) / `Cmd+Shift+P` (macOS)
-
 ## 🎯 HarmonyOS特色功能
 
 本项目充分利用了HarmonyOS的特色功能：
@@ -133,10 +129,6 @@ harmony_shop/
 - **数据持久化**: 使用@ohos.data.preferences实现本地数据存储
 - **路由导航**: 基于HarmonyOS的页面路由系统
 - **组件化开发**: 高度模块化的组件设计
-
-## 📸 应用截图
-
-*注：由于项目在预览器中运行，实际界面效果请在DevEco Studio预览器中查看*
 
 ## ⚠️ 注意事项
 
@@ -161,17 +153,6 @@ harmony_shop/
 - **ViewModel**: 处理业务逻辑和状态管理
 - **Service**: 封装数据访问和持久化操作
 
-## 📝 开发计划
-
-详细的开发计划和进度请参考 `docs/开发计划.md` 文件。
-
 ## 📄 许可证
 
 本项目仅用于学习和课程作业目的。
-
----
-
-**开发者**: [您的姓名]  
-**课程**: HarmonyOS应用开发  
-**学期**: [学期信息]  
-**最后更新**: 2024年12月
