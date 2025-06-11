@@ -455,9 +455,9 @@ struct OrderConfirmationPage {
 
         // 支付方式列表
         Column() {
-          this.buildPaymentOption('微信支付', '💚', '微信支付', '#1AAD19')
-          this.buildPaymentOption('支付宝', '🔵', '支付宝', '#1677FF')
-          this.buildPaymentOption('云闪付', '🔴', '云闪付', '#E6002D')
+          this.buildPaymentOption('微信支付', '💚', '微信支付', '#1AAD19', false)
+          this.buildPaymentOption('支付宝', '', '支付宝', '#1677FF', true, 'https://bed.djxs.xyz/file/BQACAgUAAyEGAASVl6k_AAIE-2hJi_yPv17fizJwZ0qf7q4hTImPAAK4GAACTEFQViSAqI-IBgaXNgQ.png')
+          this.buildPaymentOption('云闪付', '🔴', '云闪付', '#E6002D', false)
         }
         .padding({ left: 24, right: 24 })
         .margin({ bottom: 32 })
@@ -526,13 +526,23 @@ struct OrderConfirmationPage {
    * 构建支付方式选项
    */
   @Builder
-  buildPaymentOption(title: string, icon: string, method: '微信支付' | '支付宝' | '云闪付', brandColor: string) {
+  buildPaymentOption(title: string, icon: string, method: '微信支付' | '支付宝' | '云闪付', brandColor: string, useImageIcon: boolean = false, imageUrl?: string) {
     Row() {
       // 支付方式图标容器
       Row() {
-        Text(icon)
-          .fontSize(20)
-          .fontColor('#fff')
+        if (useImageIcon && imageUrl) {
+          Image(imageUrl)
+            .width(24)
+            .height(24)
+            .objectFit(ImageFit.Contain)
+            .onError(() => {
+              console.error(`Failed to load payment icon: ${imageUrl}`);
+            })
+        } else {
+          Text(icon)
+            .fontSize(20)
+            .fontColor('#fff')
+        }
       }
       .width(40)
       .height(40)
