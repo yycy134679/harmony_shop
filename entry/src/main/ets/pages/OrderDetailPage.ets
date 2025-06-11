@@ -149,14 +149,21 @@ struct OrderDetailPage {
 
               ForEach(this.order.items, (item: OrderItemModel) => {
                 Row() {
-                  Text('🛍️')
-                    .fontSize(40)
-                    .width(60)
-                    .height(60)
-                    .textAlign(TextAlign.Center)
-                    .backgroundColor('#f9f9f9')
-                    .borderRadius(8)
-                    .margin({ right: 12 })
+                  Stack({ alignContent: Alignment.Center }) {
+                    Image(this.orderViewModel.getProductImageUrl(item.productId))
+                      .width(60)
+                      .height(60)
+                      .objectFit(ImageFit.Contain)
+                      .backgroundColor('#FFFFFF')
+                      .onError(() => {
+                        console.error(`Failed to load product image for ID: ${item.productId}`);
+                      })
+                  }
+                  .width(60)
+                  .height(60)
+                  .backgroundColor('#f9f9f9')
+                  .borderRadius(8)
+                  .margin({ right: 12 })
 
                   Column() {
                     Text(item.name)

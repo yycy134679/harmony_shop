@@ -173,9 +173,9 @@ struct OrderListPage {
           .layoutWeight(1)
         }
         .width('100%')
-        .padding(20)
+        .padding(12)
         .backgroundColor('#fff')
-        .margin({ top: 8, left: 16, right: 16 })
+        .margin({ top: 4, left: 16, right: 16 })
         .borderRadius(8)
       }
 
@@ -237,7 +237,7 @@ struct OrderListPage {
               })
             }, (order: Order) => order.orderId)
           }
-          .padding(16)
+          .padding({ left: 16, right: 16, top: 8, bottom: 16 })
         }
         .layoutWeight(1)
       }

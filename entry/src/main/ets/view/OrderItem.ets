@@ -42,15 +42,22 @@ export struct OrderItem {
 
       // 商品信息（显示第一个商品和总数量）
       Row() {
-        // 商品图片（使用第一个商品的图片，这里需要从DataSource获取）
-        Text('🛍️')
-          .fontSize(40)
-          .width(60)
-          .height(60)
-          .textAlign(TextAlign.Center)
-          .backgroundColor('#f9f9f9')
-          .borderRadius(8)
-          .margin({ right: 12 })
+        // 商品图片（使用真实商品图片）
+        Stack({ alignContent: Alignment.Center }) {
+          Image(this.orderViewModel.getMainProductImageUrl(this.order))
+            .width(60)
+            .height(60)
+            .objectFit(ImageFit.Contain)
+            .backgroundColor('#FFFFFF')
+            .onError(() => {
+              console.error(`Failed to load order product image`);
+            })
+        }
+        .width(60)
+        .height(60)
+        .backgroundColor('#f9f9f9')
+        .borderRadius(8)
+        .margin({ right: 12 })
 
         Column() {
           Text(this.orderViewModel.getMainProductName(this.order))

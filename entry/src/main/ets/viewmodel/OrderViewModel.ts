@@ -4,6 +4,7 @@ import { OrderItem } from '../model/OrderItem';
 import { Address } from '../model/Address';
 import { CartItem } from '../model/CartItem';
 import { Constants } from '../common/Constants';
+import { DataSource } from '../model/DataSource';
 import common from '@ohos.app.ability.common';
 
 /**
@@ -164,7 +165,7 @@ export class OrderViewModel {
     const day = String(date.getDate()).padStart(2, '0');
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
-    
+
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 
@@ -210,11 +211,30 @@ export class OrderViewModel {
     if (order.items.length === 0) {
       return '无商品';
     }
-    
+
     if (order.items.length === 1) {
       return order.items[0].name;
     }
-    
+
     return `${order.items[0].name} 等${order.items.length}件商品`;
+  }
+
+  /**
+   * 根据商品ID获取商品图片URL
+   */
+  getProductImageUrl(productId: number): string {
+    const product = DataSource.getProductById(productId);
+    return product?.image || '';
+  }
+
+  /**
+   * 获取订单第一个商品的图片URL（用于订单列表显示）
+   */
+  getMainProductImageUrl(order: Order): string {
+    if (order.items.length === 0) {
+      return '';
+    }
+
+    return this.getProductImageUrl(order.items[0].productId);
   }
 }
