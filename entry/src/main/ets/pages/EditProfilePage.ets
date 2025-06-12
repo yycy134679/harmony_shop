@@ -1,3 +1,6 @@
+//202306110141 杨富涛
+//编辑个人信息页面 - 用于修改用户的手机号和邮箱信息
+
 import router from '@ohos.router';
 import { EditProfileViewModel } from '../viewmodel/EditProfileViewModel';
 import { User } from '../model/User';
@@ -5,16 +8,21 @@ import common from '@ohos.app.ability.common';
 
 /**
  * 编辑个人信息页面
+ * 支持用户修改手机号和邮箱，用户名只读
  */
 @Entry
 @Component
 struct EditProfilePage {
-  @State username: string = '';
-  @State phone: string = '';
-  @State email: string = '';
-  @State isLoading: boolean = false;
-  private editProfileViewModel: EditProfileViewModel = new EditProfileViewModel();
+  @State username: string = '';           // 用户名（只读）
+  @State phone: string = '';              // 手机号
+  @State email: string = '';              // 邮箱
+  @State isLoading: boolean = false;      // 加载/保存状态
+  private editProfileViewModel: EditProfileViewModel = new EditProfileViewModel(); // 视图模型
 
+  /**
+   * 生命周期 aboutToAppear
+   * 初始化视图模型并加载当前用户信息
+   */
   async aboutToAppear() {
     try {
       await this.editProfileViewModel.init(getContext(this) as common.UIAbilityContext);
@@ -26,6 +34,7 @@ struct EditProfilePage {
 
   /**
    * 加载用户信息
+   * 从视图模型获取当前用户信息并赋值到状态变量
    */
   private async loadUserInfo(): Promise<void> {
     try {
@@ -42,6 +51,7 @@ struct EditProfilePage {
 
   /**
    * 保存用户信息
+   * 调用视图模型方法更新手机号和邮箱
    */
   private async saveUserInfo(): Promise<void> {
     if (this.isLoading) return;
@@ -61,7 +71,7 @@ struct EditProfilePage {
           confirm: {
             value: '确定',
             action: () => {
-              router.back();
+              router.back(); // 返回上一页
             }
           }
         });
@@ -91,6 +101,9 @@ struct EditProfilePage {
     }
   }
 
+  /**
+   * 构建UI界面
+   */
   build() {
     Column() {
       // 标题栏
@@ -105,7 +118,7 @@ struct EditProfilePage {
         .height(40)
         .backgroundColor('#f0f0f0')
         .borderRadius(20)
-        .onClick(() => router.back())
+        .onClick(() => router.back()) // 返回上一页
 
         Text('编辑个人信息')
           .fontSize(18)

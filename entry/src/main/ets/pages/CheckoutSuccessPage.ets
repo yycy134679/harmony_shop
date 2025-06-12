@@ -1,16 +1,24 @@
+//202306110141 杨富涛
+//结算成功页面 - 用于展示订单支付成功后的提示和操作
+
 import { CartViewModel } from '../viewmodel/CartViewModel';
 import router from '@ohos.router';
 
 /**
  * 结算成功页面
+ * 展示订单支付成功信息，并提供继续购物和查看订单的操作
  */
 @Entry
 @Component
 struct CheckoutSuccessPage {
-  @State orderId: string = '';
-  @State totalPrice: number = 0;
-  private cartViewModel: CartViewModel = new CartViewModel();
+  @State orderId: string = '';         // 当前订单号
+  @State totalPrice: number = 0;      // 支付总金额
+  private cartViewModel: CartViewModel = new CartViewModel(); // 购物车视图模型
 
+  /**
+   * 生命周期 aboutToAppear
+   * 获取路由参数中的订单信息
+   */
   aboutToAppear() {
     // 获取传入的订单信息
     const params = router.getParams() as Record<string, Object>;
@@ -20,9 +28,12 @@ struct CheckoutSuccessPage {
     }
   }
 
+  /**
+   * 构建UI界面
+   */
   build() {
     Column() {
-      // 成功图标和文字
+      // 成功图标和文字区域
       Column() {
         Text('✅')
           .fontSize(60)
@@ -58,7 +69,7 @@ struct CheckoutSuccessPage {
       .justifyContent(FlexAlign.Center)
       .layoutWeight(1)
 
-      // 操作按钮
+      // 操作按钮区域
       Column() {
         Button('继续购物')
           .width('80%')
@@ -66,9 +77,9 @@ struct CheckoutSuccessPage {
           .backgroundColor('#ff6b35')
           .margin({ bottom: 16 })
           .onClick(() => {
-            router.clear();
+            router.clear(); // 清空页面栈
             router.pushUrl({
-              url: 'view/BottomTabs'
+              url: 'view/BottomTabs' // 跳转到首页
             });
           })
 
@@ -79,8 +90,8 @@ struct CheckoutSuccessPage {
           .fontColor('#ff6b35')
           .border({ width: 1, color: '#ff6b35' })
           .onClick(() => {
-            router.clear();
-            router.pushUrl({ url: 'pages/OrderListPage' });
+            router.clear(); // 清空页面栈
+            router.pushUrl({ url: 'pages/OrderListPage' }); // 跳转到订单列表
           })
       }
       .width('100%')

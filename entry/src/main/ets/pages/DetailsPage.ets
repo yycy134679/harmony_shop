@@ -1,3 +1,6 @@
+//202306110141 杨富涛
+//商品详情页 - 展示商品详细信息，支持收藏、加入购物车和立即购买
+
 import { Product } from '../model/Product';
 import { DataSource } from '../model/DataSource';
 import { CartViewModel } from '../viewmodel/CartViewModel';
@@ -9,17 +12,22 @@ import common from '@ohos.app.ability.common';
 
 /**
  * 商品详情页
+ * 展示商品图片、信息、价格、描述，支持收藏、加入购物车和立即购买
  */
 @Entry
 @Component
 struct DetailsPage {
-  @State product: Product | undefined = undefined;
-  @State quantity: number = 1;
-  @State isFavorite: boolean = false;
-  @StorageLink(Constants.IS_LOGGED_IN) isLoggedIn: boolean = false;
-  private cartViewModel: CartViewModel = new CartViewModel();
-  private favoriteViewModel: FavoriteViewModel = new FavoriteViewModel();
+  @State product: Product | undefined = undefined; // 当前商品对象
+  @State quantity: number = 1;                    // 购买数量
+  @State isFavorite: boolean = false;             // 是否已收藏
+  @StorageLink(Constants.IS_LOGGED_IN) isLoggedIn: boolean = false; // 登录状态
+  private cartViewModel: CartViewModel = new CartViewModel();       // 购物车视图模型
+  private favoriteViewModel: FavoriteViewModel = new FavoriteViewModel(); // 收藏视图模型
 
+  /**
+   * 生命周期 aboutToAppear
+   * 初始化收藏视图模型，获取商品详情和收藏状态
+   */
   async aboutToAppear() {
     try {
       await this.favoriteViewModel.init(getContext(this) as common.UIAbilityContext);
@@ -39,6 +47,9 @@ struct DetailsPage {
     }
   }
 
+  /**
+   * 构建UI界面
+   */
   build() {
     Column() {
       // 顶部导航栏
@@ -52,7 +63,7 @@ struct DetailsPage {
         .height(40)
         .backgroundColor('#F5F5F5')
         .onClick(() => {
-          router.back();
+          router.back(); // 返回上一页
         })
 
         Blank()
@@ -358,7 +369,7 @@ struct DetailsPage {
         .backgroundColor('#fff')
         .shadow({ radius: 8, color: 'rgba(0, 0, 0, 0.1)', offsetY: -2 })
       } else {
-        // 商品不存在
+        // 商品不存在时的提示
         Column() {
           Text('商品不存在')
             .fontSize(16)

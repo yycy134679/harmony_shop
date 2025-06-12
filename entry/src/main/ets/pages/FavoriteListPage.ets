@@ -1,3 +1,6 @@
+//202306110141 杨富涛
+//我的收藏页面 - 展示用户收藏的商品，支持查看详情和取消收藏
+
 import router from '@ohos.router';
 import { FavoriteViewModel } from '../viewmodel/FavoriteViewModel';
 import { Product } from '../model/Product';
@@ -6,14 +9,19 @@ import common from '@ohos.app.ability.common';
 
 /**
  * 我的收藏页面
+ * 展示用户收藏的商品列表，支持查看详情和取消收藏
  */
 @Entry
 @Component
 struct FavoriteListPage {
-  @State favoriteProducts: Product[] = [];
-  @State isLoading: boolean = true;
-  private favoriteViewModel: FavoriteViewModel = new FavoriteViewModel();
+  @State favoriteProducts: Product[] = []; // 收藏商品列表
+  @State isLoading: boolean = true;        // 加载状态
+  private favoriteViewModel: FavoriteViewModel = new FavoriteViewModel(); // 收藏视图模型
 
+  /**
+   * 生命周期 aboutToAppear
+   * 初始化视图模型并加载收藏商品
+   */
   async aboutToAppear() {
     try {
       await this.favoriteViewModel.init(getContext(this) as common.UIAbilityContext);
@@ -39,6 +47,7 @@ struct FavoriteListPage {
 
   /**
    * 取消收藏
+   * @param productId 要取消收藏的商品ID
    */
   private async removeFavorite(productId: number): Promise<void> {
     try {
@@ -67,6 +76,7 @@ struct FavoriteListPage {
 
   /**
    * 跳转到商品详情页
+   * @param productId 商品ID
    */
   private goToProductDetail(productId: number): void {
     router.pushUrl({
@@ -75,6 +85,9 @@ struct FavoriteListPage {
     });
   }
 
+  /**
+   * 构建UI界面
+   */
   build() {
     Column() {
       // 标题栏
@@ -89,7 +102,7 @@ struct FavoriteListPage {
         .height(40)
         .backgroundColor('#f0f0f0')
         .borderRadius(20)
-        .onClick(() => router.back())
+        .onClick(() => router.back()) // 返回上一页
 
         Text('我的收藏')
           .fontSize(18)
@@ -107,7 +120,7 @@ struct FavoriteListPage {
       .backgroundColor('#fff')
 
       if (this.isLoading) {
-        // 加载状态
+        // 加载状态 - 显示加载进度
         Column() {
           LoadingProgress()
             .width(40)
@@ -123,7 +136,7 @@ struct FavoriteListPage {
         .height('60%')
         .justifyContent(FlexAlign.Center)
       } else if (this.favoriteProducts.length === 0) {
-        // 空状态
+        // 空状态 - 没有收藏商品时显示
         Column() {
           Text('💝')
             .fontSize(60)
@@ -173,6 +186,7 @@ struct FavoriteListPage {
 
   /**
    * 构建收藏商品项
+   * @param product 商品对象
    */
   @Builder
   buildFavoriteItem(product: Product) {
