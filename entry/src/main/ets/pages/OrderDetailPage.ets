@@ -1,3 +1,6 @@
+// 202306110141 杨富涛
+// 订单详情页面 - 展示订单的详细信息，包括商品、收货地址、支付方式等
+
 import router from '@ohos.router';
 import { Order } from '../model/Order';
 import { OrderItem as OrderItemModel } from '../model/OrderItem';
@@ -5,13 +8,18 @@ import { OrderViewModel } from '../viewmodel/OrderViewModel';
 
 /**
  * 订单详情页面
+ * 展示订单的详细信息，包括商品、收货地址、支付方式等
  */
 @Entry
 @Component
 struct OrderDetailPage {
-  @State order: Order | null = null;
-  private orderViewModel: OrderViewModel = new OrderViewModel();
+  @State order: Order | null = null; // 当前订单对象
+  private orderViewModel: OrderViewModel = new OrderViewModel(); // 订单视图模型
 
+  /**
+   * 生命周期 aboutToAppear
+   * 获取路由参数中的订单信息
+   */
   aboutToAppear() {
     // 获取传入的订单信息
     const params = router.getParams() as Record<string, Object>;
@@ -20,6 +28,9 @@ struct OrderDetailPage {
     }
   }
 
+  /**
+   * 构建UI界面
+   */
   build() {
     Column() {
       // 标题栏
@@ -34,7 +45,7 @@ struct OrderDetailPage {
         .height(40)
         .backgroundColor('#f0f0f0')
         .borderRadius(20)
-        .onClick(() => router.back())
+        .onClick(() => router.back()) // 返回上一页
 
         Text('订单详情')
           .fontSize(18)

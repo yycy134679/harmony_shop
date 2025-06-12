@@ -1,4 +1,5 @@
 // 202306110141 杨富涛
+// 首页（商品列表页）- 展示商品分类、商品列表，支持登录、加入购物车、跳转详情
 
 import { router } from '@kit.ArkUI';
 import { Constants } from '../common/Constants';
@@ -7,6 +8,10 @@ import { UserViewModel } from '../viewmodel/UserViewModel';
 import { Product } from '../model/Product';
 import promptAction from '@ohos.promptAction';
 
+/**
+ * 首页（商品列表页）
+ * 展示商品分类、商品列表，支持登录、加入购物车、跳转详情
+ */
 interface IndexProduct {
   id: number;
   name: string;
@@ -19,13 +24,13 @@ interface IndexProduct {
 @Component
 struct ShoppingPage {
   // 登录状态管理
-  @StorageLink(Constants.IS_LOGGED_IN) isLoggedIn: boolean = false;
-  @StorageLink(Constants.CURRENT_USER) currentUser: string = '';
+  @StorageLink(Constants.IS_LOGGED_IN) isLoggedIn: boolean = false; // 是否已登录
+  @StorageLink(Constants.CURRENT_USER) currentUser: string = '';   // 当前用户名
 
   // State for the selected category
-  @State selectedCategory: string = '手机'; // Default selected category
+  @State selectedCategory: string = '手机'; // 当前选中的商品分类
   // List of categories
-  private categories: string[] = ['手机', '鞋子', '衣服'];
+  private categories: string[] = ['手机', '鞋子', '衣服']; // 商品分类列表
   // 购物车视图模型
   private cartViewModel: CartViewModel = new CartViewModel();
   // 用户视图模型
@@ -106,16 +111,24 @@ struct ShoppingPage {
   // Filtered products based on selected category
   @State filteredProducts: IndexProduct[] = [];
 
-  // Lifecycle method: Called when the component is about to appear
+  /**
+   * 生命周期 aboutToAppear
+   * 页面显示时根据分类过滤商品
+   */
   aboutToAppear() {
     this.updateFilteredProducts();
   }
 
-  // Method to update the filtered products list
+  /**
+   * 根据当前选中分类过滤商品
+   */
   updateFilteredProducts() {
     this.filteredProducts = this.allProducts.filter(product => product.category === this.selectedCategory);
   }
 
+  /**
+   * 构建UI界面
+   */
   build() {
     Column() {
       // 1. 顶部标题栏
@@ -176,7 +189,7 @@ struct ShoppingPage {
       .width('100%')
       .padding({ left: 20, right: 20, top: 15, bottom: 15 })
 
-      // 3. 药丸式分类导航栏
+      // 3. 分类导航栏
       Scroll() {
         Row({ space: 12 }) {
           ForEach(this.categories, (category: string) => {
@@ -206,6 +219,7 @@ struct ShoppingPage {
         ForEach(this.filteredProducts, (product: IndexProduct) => {
           ListItem() {
             Column() {
+              // 商品图片
               Stack({ alignContent: Alignment.Center }) {
                 Image(product.imageUrl)
                   .width('100%')
@@ -220,7 +234,7 @@ struct ShoppingPage {
               .height(200)
               .backgroundColor('#F9F9F9')
 
-              // 产品详情，优化间距与排版
+              // 产品详情
               Column() {
                 Text(product.name)
                   .fontSize(16)

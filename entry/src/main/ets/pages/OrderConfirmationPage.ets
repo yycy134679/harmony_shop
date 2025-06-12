@@ -1,3 +1,6 @@
+// 202306110141 杨富涛
+// 订单确认页面 - 展示购物车商品、收货地址、价格明细，支持选择支付方式和下单
+
 import router from '@ohos.router';
 import promptAction from '@ohos.promptAction';
 import { CartViewModel } from '../viewmodel/CartViewModel';
@@ -7,18 +10,23 @@ import common from '@ohos.app.ability.common';
 
 /**
  * 订单确认页面
+ * 展示购物车商品、收货地址、价格明细，支持选择支付方式和下单
  */
 @Entry
 @Component
 struct OrderConfirmationPage {
-  @State cartItems: CartItem[] = [];
-  @State selectedAddress: Address | null = null;
-  @State totalPrice: number = 0;
-  @State isLoading: boolean = false;
-  @State paymentMethod: '微信支付' | '支付宝' | '云闪付' = '微信支付';
-  @State showPaymentDialog: boolean = false;
-  private cartViewModel: CartViewModel = new CartViewModel();
+  @State cartItems: CartItem[] = []; // 购物车商品列表
+  @State selectedAddress: Address | null = null; // 当前选中的收货地址
+  @State totalPrice: number = 0; // 总价
+  @State isLoading: boolean = false; // 支付中状态
+  @State paymentMethod: '微信支付' | '支付宝' | '云闪付' = '微信支付'; // 支付方式
+  @State showPaymentDialog: boolean = false; // 是否显示支付方式弹窗
+  private cartViewModel: CartViewModel = new CartViewModel(); // 购物车视图模型
 
+  /**
+   * 生命周期 aboutToAppear
+   * 初始化购物车视图模型，加载购物车商品、默认地址、校验购物车
+   */
   async aboutToAppear() {
     try {
       await this.cartViewModel.init(getContext(this) as common.UIAbilityContext);
@@ -56,7 +64,7 @@ struct OrderConfirmationPage {
   }
 
   /**
-   * 选择收货地址
+   * 跳转选择收货地址页面
    */
   private selectAddress(): void {
     router.pushUrl({
@@ -97,6 +105,7 @@ struct OrderConfirmationPage {
 
   /**
    * 处理支付
+   * 校验收货地址，模拟支付，创建订单并跳转到支付成功页面
    */
   private async processPayment(): Promise<void> {
     if (this.isLoading) return;
@@ -146,6 +155,9 @@ struct OrderConfirmationPage {
     }
   }
 
+  /**
+   * 构建UI界面
+   */
   build() {
     Stack() {
       // 主要内容
