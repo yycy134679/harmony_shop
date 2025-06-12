@@ -1,19 +1,29 @@
+// 202306110141 杨富涛
+// 注册页面 - 提供用户注册功能，包括输入验证和跳转登录
+
 import promptAction from '@ohos.promptAction';
 import router from '@ohos.router';
 import { UserViewModel } from '../viewmodel/UserViewModel';
 import { User } from '../model/User';
 import common from '@ohos.app.ability.common';
 
+/**
+ * 注册页面
+ * 提供用户注册功能，包括输入验证和跳转登录
+ */
 @Entry
 @Component
 struct RegisterPage {
-  @State username: string = '';
-  @State password: string = '';
-  @State confirmPassword: string = '';
-  @State phone: string = '';
-  private viewModel: UserViewModel = new UserViewModel();
-  private context = getContext(this) as common.UIAbilityContext;
+  @State username: string = ''; // 用户名
+  @State password: string = ''; // 密码
+  @State confirmPassword: string = ''; // 确认密码
+  @State phone: string = ''; // 手机号
+  private viewModel: UserViewModel = new UserViewModel(); // 用户视图模型
+  private context = getContext(this) as common.UIAbilityContext; // UI上下文
 
+  /**
+   * 构建UI界面
+   */
   build() {
     Column({ space: 20 }) {
       Text("用户注册")
@@ -86,7 +96,7 @@ struct RegisterPage {
           const result = await this.viewModel.register(user);
           if (result.success) {
             promptAction.showToast({ message: result.message });
-            router.replaceUrl({ url: 'pages/LoginPage' });
+            router.replaceUrl({ url: 'pages/LoginPage' }); // 注册成功后跳转到登录页
           } else {
             promptAction.showToast({ message: result.message });
           }

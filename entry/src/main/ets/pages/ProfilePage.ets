@@ -1,3 +1,6 @@
+// 202306110141 杨富涛
+// 个人中心页面 - 展示用户信息和功能菜单，支持登录、退出和页面跳转
+
 import router from '@ohos.router';
 import { Constants } from '../common/Constants';
 import { UserViewModel } from '../viewmodel/UserViewModel';
@@ -8,18 +11,23 @@ import common from '@ohos.app.ability.common';
 
 /**
  * 个人中心页面
+ * 展示用户信息和功能菜单，支持登录、退出和页面跳转
  */
 @Entry
 @Component
 struct ProfilePage {
-  @StorageLink(Constants.IS_LOGGED_IN) isLoggedIn: boolean = false;
-  @StorageLink(Constants.CURRENT_USER) currentUser: string = '';
-  @State userInfo: User | null = null;
-  @State defaultAddress: Address | null = null;
-  @State isLoading: boolean = false;
-  private userViewModel: UserViewModel = new UserViewModel();
-  private profileViewModel: ProfileViewModel = new ProfileViewModel();
+  @StorageLink(Constants.IS_LOGGED_IN) isLoggedIn: boolean = false; // 登录状态
+  @StorageLink(Constants.CURRENT_USER) currentUser: string = '';   // 当前用户名
+  @State userInfo: User | null = null; // 用户详细信息
+  @State defaultAddress: Address | null = null; // 默认地址
+  @State isLoading: boolean = false; // 加载状态
+  private userViewModel: UserViewModel = new UserViewModel(); // 用户视图模型（处理登录/退出）
+  private profileViewModel: ProfileViewModel = new ProfileViewModel(); // 个人中心视图模型
 
+  /**
+   * 生命周期 aboutToAppear
+   * 初始化视图模型，并加载用户数据（如果已登录）
+   */
   async aboutToAppear() {
     try {
       await this.profileViewModel.init(getContext(this) as common.UIAbilityContext);
@@ -33,6 +41,7 @@ struct ProfilePage {
 
   /**
    * 加载用户数据
+   * 获取用户详细信息和默认地址
    */
   private async loadUserData(): Promise<void> {
     if (this.isLoading) return;
@@ -52,6 +61,7 @@ struct ProfilePage {
 
   /**
    * 处理退出登录
+   * 显示确认对话框，确认后执行退出操作
    */
   private handleLogout(): void {
     AlertDialog.show({
@@ -83,14 +93,12 @@ struct ProfilePage {
   private goToEditProfile(): void {
     router.pushUrl({
       url: 'pages/EditProfilePage'
-    }).then(() => {
-      // 页面跳转成功后，监听页面返回事件
-      // 当从编辑页面返回时，重新加载用户数据
     });
   }
 
   /**
    * 页面显示时的回调
+   * 每次页面显示时重新加载用户数据
    */
   onPageShow(): void {
     if (this.isLoggedIn) {
@@ -119,6 +127,9 @@ struct ProfilePage {
     router.pushUrl({ url: 'pages/OrderListPage' });
   }
 
+  /**
+   * 构建UI界面
+   */
   build() {
     Column() {
       // 标题栏
@@ -284,6 +295,9 @@ struct ProfilePage {
 
   /**
    * 构建菜单项
+   * @param title 菜单标题
+   * @param icon 菜单图标
+   * @param onClick 点击事件
    */
   @Builder
   buildMenuItem(title: string, icon: string, onClick: () => void) {

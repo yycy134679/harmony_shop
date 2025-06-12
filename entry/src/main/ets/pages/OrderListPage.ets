@@ -1,3 +1,6 @@
+// 202306110141 杨富涛
+// 我的订单页面 - 展示用户的订单列表，支持查看详情和刷新
+
 import router from '@ohos.router';
 import promptAction from '@ohos.promptAction';
 import { OrderViewModel } from '../viewmodel/OrderViewModel';
@@ -5,6 +8,9 @@ import { OrderItem } from '../view/OrderItem';
 import { Order } from '../model/Order';
 import common from '@ohos.app.ability.common';
 
+/**
+ * 订单统计信息接口
+ */
 interface OrderStats {
   total: number;
   paid: number;
@@ -13,15 +19,20 @@ interface OrderStats {
 
 /**
  * 我的订单页面
+ * 展示用户的订单列表、订单统计信息，支持查看详情和刷新
  */
 @Entry
 @Component
 struct OrderListPage {
-  @State orders: Order[] = [];
-  @State isLoading: boolean = true;
-  @State orderStats: OrderStats = { total: 0, paid: 0, completed: 0 };
-  private orderViewModel: OrderViewModel = new OrderViewModel();
+  @State orders: Order[] = []; // 订单列表
+  @State isLoading: boolean = true; // 加载状态
+  @State orderStats: OrderStats = { total: 0, paid: 0, completed: 0 }; // 订单统计
+  private orderViewModel: OrderViewModel = new OrderViewModel(); // 订单视图模型
 
+  /**
+   * 生命周期 aboutToAppear
+   * 初始化视图模型、加载订单和统计信息
+   */
   async aboutToAppear() {
     try {
       await this.orderViewModel.init(getContext(this) as common.UIAbilityContext);
@@ -43,6 +54,7 @@ struct OrderListPage {
 
   /**
    * 加载订单列表
+   * 从视图模型获取订单并按时间倒序排列
    */
   private async loadOrders(): Promise<void> {
     try {
@@ -74,6 +86,7 @@ struct OrderListPage {
 
   /**
    * 查看订单详情
+   * 跳转到订单详情页
    */
   private viewOrderDetail(order: Order): void {
     router.pushUrl({
@@ -84,12 +97,16 @@ struct OrderListPage {
 
   /**
    * 刷新订单列表
+   * 重新加载订单和统计信息
    */
   private async refreshOrders(): Promise<void> {
     await this.loadOrders();
     await this.loadOrderStats();
   }
 
+  /**
+   * 构建UI界面
+   */
   build() {
     Column() {
       // 标题栏
@@ -104,7 +121,7 @@ struct OrderListPage {
         .height(40)
         .backgroundColor('#f0f0f0')
         .borderRadius(20)
-        .onClick(() => router.back())
+        .onClick(() => router.back()) // 返回上一页
 
         Text('我的订单')
           .fontSize(18)
@@ -221,7 +238,7 @@ struct OrderListPage {
             .borderRadius(20)
             .onClick(() => {
               router.clear();
-              router.pushUrl({ url: 'view/BottomTabs' });
+              router.pushUrl({ url: 'view/BottomTabs' }); // 跳转到首页
             })
         }
         .width('100%')
