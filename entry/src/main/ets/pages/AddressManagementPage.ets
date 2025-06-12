@@ -1,3 +1,6 @@
+//202306110141 杨富涛
+//地址管理页面 - 用于管理用户的收货地址，支持添加、编辑、删除和设置默认地址
+
 import router from '@ohos.router';
 import promptAction from '@ohos.promptAction';
 import { AddressViewModel } from '../viewmodel/AddressViewModel';
@@ -7,14 +10,19 @@ import common from '@ohos.app.ability.common';
 
 /**
  * 地址管理页面
+ * 用于展示、添加、编辑、删除和设置默认地址
  */
 @Entry
 @Component
 struct AddressManagementPage {
-  @State addresses: Address[] = [];
-  @State isLoading: boolean = true;
-  private addressViewModel: AddressViewModel = new AddressViewModel();
+  @State addresses: Address[] = [];    // 地址列表
+  @State isLoading: boolean = true;    // 加载状态
+  private addressViewModel: AddressViewModel = new AddressViewModel(); // 地址数据视图模型
 
+  /**
+   * 组件即将出现时的生命周期函数
+   * 初始化视图模型并加载地址列表
+   */
   async aboutToAppear() {
     try {
       await this.addressViewModel.init(getContext(this) as common.UIAbilityContext);
@@ -27,6 +35,7 @@ struct AddressManagementPage {
 
   /**
    * 加载地址列表
+   * 从视图模型中获取用户的所有地址
    */
   private async loadAddresses(): Promise<void> {
     try {
@@ -45,6 +54,7 @@ struct AddressManagementPage {
 
   /**
    * 新增地址
+   * 跳转到地址编辑页面
    */
   private addAddress(): void {
     router.pushUrl({ url: 'pages/AddressEditPage' });
@@ -52,6 +62,8 @@ struct AddressManagementPage {
 
   /**
    * 编辑地址
+   * 跳转到地址编辑页面并传递地址信息
+   * @param address 需要编辑的地址对象
    */
   private editAddress(address: Address): void {
     router.pushUrl({
@@ -62,6 +74,8 @@ struct AddressManagementPage {
 
   /**
    * 删除地址
+   * 显示确认对话框，确认后删除地址
+   * @param address 需要删除的地址对象
    */
   private deleteAddress(address: Address): void {
     AlertDialog.show({
@@ -103,6 +117,7 @@ struct AddressManagementPage {
 
   /**
    * 设置默认地址
+   * @param address 需要设置为默认的地址对象
    */
   private async setDefaultAddress(address: Address): Promise<void> {
     try {
@@ -128,6 +143,9 @@ struct AddressManagementPage {
     }
   }
 
+  /**
+   * 构建UI界面
+   */
   build() {
     Column() {
       // 标题栏
@@ -142,7 +160,7 @@ struct AddressManagementPage {
         .height(40)
         .backgroundColor('#f0f0f0')
         .borderRadius(20)
-        .onClick(() => router.back())
+        .onClick(() => router.back()) // 返回上一页
 
         Text('地址管理')
           .fontSize(18)
@@ -162,7 +180,7 @@ struct AddressManagementPage {
         .height(40)
         .backgroundColor('#f0f0f0')
         .borderRadius(20)
-        .onClick(() => this.addAddress())
+        .onClick(() => this.addAddress()) // 点击添加新地址
       }
       .width('100%')
       .height(56)
@@ -170,7 +188,7 @@ struct AddressManagementPage {
       .backgroundColor('#fff')
 
       if (this.isLoading) {
-        // 加载状态
+        // 加载状态 - 显示加载进度指示器
         Column() {
           LoadingProgress()
             .width(40)
@@ -187,7 +205,7 @@ struct AddressManagementPage {
         .alignItems(HorizontalAlign.Center)
         .padding({ top: 100 })
       } else if (this.addresses.length === 0) {
-        // 空状态
+        // 空状态 - 没有地址时显示
         Column() {
           Text('🏠')
             .fontSize(60)
@@ -211,7 +229,7 @@ struct AddressManagementPage {
             .fontColor('#fff')
             .fontSize(16)
             .borderRadius(20)
-            .onClick(() => this.addAddress())
+            .onClick(() => this.addAddress()) // 点击添加新地址
         }
         .width('100%')
         .layoutWeight(1)
@@ -219,7 +237,7 @@ struct AddressManagementPage {
         .alignItems(HorizontalAlign.Center)
         .padding({ top: 100 })
       } else {
-        // 地址列表
+        // 地址列表 - 显示所有地址
         Scroll() {
           Column() {
             ForEach(this.addresses, (address: Address) => {
@@ -230,7 +248,7 @@ struct AddressManagementPage {
                 onDelete: (addr: Address) => this.deleteAddress(addr),
                 onSetDefault: (addr: Address) => this.setDefaultAddress(addr)
               })
-            }, (address: Address) => address.id)
+            }, (address: Address) => address.id) // 使用地址ID作为唯一键
           }
           .width('100%')
           .alignItems(HorizontalAlign.Start)
