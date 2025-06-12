@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 收藏列表项组件，用于显示收藏商品信息
+
 import { Product } from '../model/Product';
 
 /**

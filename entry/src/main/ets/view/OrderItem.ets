@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 订单列表项组件，用于显示订单信息
+
 import { Order } from '../model/Order';
 import { OrderViewModel } from '../viewmodel/OrderViewModel';
 

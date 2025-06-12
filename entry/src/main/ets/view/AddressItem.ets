@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 地址项组件，用于显示地址信息
+
 import { Address } from '../model/Address';
 
 /**

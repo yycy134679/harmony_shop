@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 收藏服务，用于管理用户收藏列表
+
 import preferences from '@ohos.data.preferences';
 import { Constants } from '../common/Constants';
 import common from '@ohos.app.ability.common';
@@ -85,7 +88,7 @@ export class FavoriteService {
   async addFavorite(username: string, productId: number): Promise<boolean> {
     try {
       const favorites = await this.getFavorites(username);
-      
+
       // 检查是否已经收藏
       if (favorites.includes(productId)) {
         return false; // 已经收藏过了
@@ -107,7 +110,7 @@ export class FavoriteService {
     try {
       const favorites = await this.getFavorites(username);
       const index = favorites.indexOf(productId);
-      
+
       if (index === -1) {
         return false; // 商品不在收藏列表中
       }
@@ -140,7 +143,7 @@ export class FavoriteService {
   async toggleFavorite(username: string, productId: number): Promise<boolean> {
     try {
       const isCurrentlyFavorite = await this.isFavorite(username, productId);
-      
+
       if (isCurrentlyFavorite) {
         await this.removeFavorite(username, productId);
         return false; // 返回新的收藏状态：false表示已取消收藏

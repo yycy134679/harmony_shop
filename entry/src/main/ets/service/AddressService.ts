@@ -1,11 +1,11 @@
+//202306110141 杨富涛
+//地址服务，用于管理用户地址列表
+
 import preferences from '@ohos.data.preferences';
 import { Address } from '../model/Address';
 import { Constants } from '../common/Constants';
 import common from '@ohos.app.ability.common';
 
-/**
- * 地址服务类 - 封装用户收货地址的持久化操作
- */
 export class AddressService {
   private static instance: AddressService;
   private preferencesStore: preferences.Preferences | null = null;
@@ -86,7 +86,7 @@ export class AddressService {
   async addAddress(username: string, address: Address): Promise<boolean> {
     try {
       const addresses = await this.getAddresses(username);
-      
+
       // 如果是默认地址，先取消其他地址的默认状态
       if (address.isDefault) {
         addresses.forEach(addr => addr.isDefault = false);
@@ -108,7 +108,7 @@ export class AddressService {
     try {
       const addresses = await this.getAddresses(username);
       const index = addresses.findIndex(addr => addr.id === updatedAddress.id);
-      
+
       if (index === -1) {
         return false; // 地址不存在
       }
@@ -134,7 +134,7 @@ export class AddressService {
     try {
       const addresses = await this.getAddresses(username);
       const index = addresses.findIndex(addr => addr.id === addressId);
-      
+
       if (index === -1) {
         return false; // 地址不存在
       }
@@ -167,16 +167,16 @@ export class AddressService {
   async setDefaultAddress(username: string, addressId: string): Promise<boolean> {
     try {
       const addresses = await this.getAddresses(username);
-      
+
       // 取消所有地址的默认状态
       addresses.forEach(addr => addr.isDefault = false);
-      
+
       // 设置指定地址为默认
       const targetAddress = addresses.find(addr => addr.id === addressId);
       if (!targetAddress) {
         return false; // 地址不存在
       }
-      
+
       targetAddress.isDefault = true;
       await this.saveAddresses(username, addresses);
       return true;

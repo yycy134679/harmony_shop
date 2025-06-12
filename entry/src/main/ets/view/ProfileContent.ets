@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 个人中心内容组件，用于显示用户信息和功能菜单
+
 import router from '@ohos.router';
 import { Constants } from '../common/Constants';
 import { UserViewModel } from '../viewmodel/UserViewModel';

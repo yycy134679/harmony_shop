@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 地址管理视图模型，用于管理地址相关的业务逻辑
+
 import { AddressService } from '../service/AddressService';
 import { Address } from '../model/Address';
 import { Constants } from '../common/Constants';
@@ -152,7 +155,7 @@ export class AddressViewModel {
       // 获取所有地址
       const addresses = await this.addressService.getAddresses(currentUser);
       const targetAddress = addresses.find(addr => addr.id === addressId);
-      
+
       if (!targetAddress) {
         return { success: false, message: '地址不存在' };
       }
@@ -160,7 +163,7 @@ export class AddressViewModel {
       // 设置为默认地址
       targetAddress.isDefault = true;
       const success = await this.addressService.updateAddress(currentUser, targetAddress);
-      
+
       if (success) {
         return { success: true, message: '默认地址设置成功' };
       } else {

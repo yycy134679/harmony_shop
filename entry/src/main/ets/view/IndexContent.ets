@@ -1,4 +1,6 @@
-// 首页内容组件
+// 202506120141 杨富涛
+// 首页内容组件，用于显示商品列表和搜索功能
+
 import { router } from '@kit.ArkUI';
 import { Constants } from '../common/Constants';
 import { CartViewModel } from '../viewmodel/CartViewModel';

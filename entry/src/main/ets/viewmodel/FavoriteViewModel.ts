@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 收藏视图模型，用于管理商品收藏的业务逻辑
+
 import { FavoriteService } from '../service/FavoriteService';
 import { Product } from '../model/Product';
 import { DataSource } from '../model/DataSource';
@@ -33,7 +36,7 @@ export class FavoriteViewModel {
 
       const newFavoriteStatus = await this.favoriteService.toggleFavorite(currentUser, productId);
       const message = newFavoriteStatus ? '已添加到收藏' : '已取消收藏';
-      
+
       return { success: true, isFavorite: newFavoriteStatus, message };
     } catch (error) {
       console.error('Failed to toggle favorite:', error);

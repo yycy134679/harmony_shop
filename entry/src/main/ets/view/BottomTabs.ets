@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 底部导航栏容器组件，用于显示应用的主导航容器
+
 import { Constants } from '../common/Constants';
 import { CartItem } from '../model/CartItem';
 import { IndexContent } from './IndexContent';

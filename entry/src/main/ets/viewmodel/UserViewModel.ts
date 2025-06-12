@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 用户视图模型，用于管理用户相关的业务逻辑
+
 import { UserService } from '../service/UserService';
 import { User } from '../model/User';
 import { Constants } from '../common/Constants';

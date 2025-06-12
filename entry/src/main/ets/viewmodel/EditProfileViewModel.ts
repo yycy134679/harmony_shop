@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 编辑个人信息视图模型，用于管理个人信息编辑的业务逻辑
+
 import { UserService } from '../service/UserService';
 import { User } from '../model/User';
 import { Constants } from '../common/Constants';

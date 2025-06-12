@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 个人中心视图模型，用于管理个人中心页面的业务逻辑
+
 import { UserService } from '../service/UserService';
 import { AddressService } from '../service/AddressService';
 import { User } from '../model/User';

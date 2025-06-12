@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 用户服务，用于管理用户注册和登录验证
+
 import preferences from '@ohos.data.preferences';
 import { User } from '../model/User';
 import { Constants } from '../common/Constants';

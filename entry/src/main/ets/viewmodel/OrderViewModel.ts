@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 订单管理视图模型，用于管理订单相关的业务逻辑
+
 import { OrderService } from '../service/OrderService';
 import { Order } from '../model/Order';
 import { OrderItem } from '../model/OrderItem';

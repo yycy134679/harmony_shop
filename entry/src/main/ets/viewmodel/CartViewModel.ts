@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 购物车视图模型，用于管理购物车相关的业务逻辑
+
 import { CartItem } from '../model/CartItem';
 import { Product } from '../model/Product';
 import { Constants } from '../common/Constants';

@@ -1,4 +1,6 @@
-// 购物车内容组件
+// 202506120141 杨富涛
+// 购物车内容组件，用于显示购物车列表和结算信息
+
 import { CartViewModel } from '../viewmodel/CartViewModel';
 import { CartItem } from '../model/CartItem';
 import { Constants } from '../common/Constants';

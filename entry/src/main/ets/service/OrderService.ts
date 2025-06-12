@@ -1,3 +1,6 @@
+// 202506120141 杨富涛
+// 订单服务，用于管理用户订单列表
+
 import preferences from '@ohos.data.preferences';
 import { Order } from '../model/Order';
 import { Constants } from '../common/Constants';
@@ -103,7 +106,7 @@ export class OrderService {
       const orders = await this.getOrders(order.userId);
       orders.push(newOrder);
       await this.saveOrders(order.userId, orders);
-      
+
       return newOrder.orderId;
     } catch (error) {
       console.error('Failed to create order:', error);
@@ -131,7 +134,7 @@ export class OrderService {
     try {
       const orders = await this.getOrders(username);
       const orderIndex = orders.findIndex(order => order.orderId === orderId);
-      
+
       if (orderIndex === -1) {
         return false; // 订单不存在
       }
